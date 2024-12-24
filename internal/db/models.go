@@ -5,16 +5,19 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type Album struct {
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	SingerID int64  `json:"singer_id"`
-	ImageUrl string `json:"image_url"`
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
+	ImageUrl  string    `json:"image_url"`
+	IsDeleted bool      `json:"is_deleted"`
+	SingerID  int64     `json:"singer_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Favorite struct {
@@ -23,9 +26,9 @@ type Favorite struct {
 }
 
 type Genre struct {
-	ID       int64  `json:"id"`
-	Name     string `json:"name"`
-	ImageUrl string `json:"image_url"`
+	ID       int64          `json:"id"`
+	Name     sql.NullString `json:"name"`
+	ImageUrl string         `json:"image_url"`
 }
 
 type Role struct {
@@ -34,9 +37,10 @@ type Role struct {
 }
 
 type Singer struct {
-	ID       int64  `json:"id"`
-	Fullname string `json:"fullname"`
-	ImageUrl string `json:"image_url"`
+	ID        int64  `json:"id"`
+	Fullname  string `json:"fullname"`
+	ImageUrl  string `json:"image_url"`
+	IsDeleted bool   `json:"is_deleted"`
 }
 
 type SingerSong struct {
@@ -49,8 +53,9 @@ type Song struct {
 	Name      string    `json:"name"`
 	SongFile  string    `json:"song_file"`
 	LyricFile string    `json:"lyric_file"`
-	CreatedAt time.Time `json:"created_at"`
+	IsDeleted bool      `json:"is_deleted"`
 	AlbumID   int64     `json:"album_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type SongGenre struct {

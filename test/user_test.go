@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRegister(t *testing.T) {
+func createRandomUser(t *testing.T) {
 	hash, err := util.HashPassword("kocanpass")
 	require.NoError(t, err)
 	gender := util.RandomGender()
@@ -27,4 +27,31 @@ func TestRegister(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
+}
+
+func createSinger(t *testing.T) {
+	singer, err := testQueries.CreateSinger(context.Background(), db.CreateSingerParams{
+		Fullname: util.RandomString(6),
+		ImageUrl: util.RandomAvatar(util.RandomGender()),
+	})
+	require.NoError(t, err)
+	require.NotEmpty(t, singer)
+}
+
+// // Testing
+func TestRegister(t *testing.T) {
+	createRandomUser(t)
+}
+
+func TestSinger(t *testing.T) {
+	createSinger(t)
+}
+
+func TestSelect(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		createSinger(t)
+	}
+	list, err := testQueries.GetSinger(context.Background(), db.GetSingerParams{Limit: 10, Offset: 3})
+	require.NoError(t, err)
+	require.NotEmpty(t, list)
 }

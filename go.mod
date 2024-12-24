@@ -4,6 +4,7 @@ go 1.23.3
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.5.0
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.19.0

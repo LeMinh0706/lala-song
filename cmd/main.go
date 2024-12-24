@@ -1,13 +1,23 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"log"
+
+	"github.com/LeMinh0706/lala-song/cmd/server"
+	"github.com/LeMinh0706/lala-song/internal/initialize"
+	"github.com/LeMinh0706/lala-song/util"
+)
 
 func main() {
-	app := fiber.New()
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
-
-	app.Listen(":3000")
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("Can't load config:", err)
+	}
+	pg, err := initialize.Postgres(config)
+	defer pg.Close()
+	server, err := server.NewServer(pg, config)
+	if err != nil {
+		log.Fatal("Cannot load server: ", err)
+	}
+	server.Start(config.ServerAddress)
 }
