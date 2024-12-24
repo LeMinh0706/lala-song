@@ -11,6 +11,26 @@ import (
 	"github.com/google/uuid"
 )
 
+const login = `-- name: Login :one
+SELECT id, username, password, fullname, gender, avt, role_id, created_at FROM users WHERE username = $1
+`
+
+func (q *Queries) Login(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, login, username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Password,
+		&i.Fullname,
+		&i.Gender,
+		&i.Avt,
+		&i.RoleID,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const register = `-- name: Register :one
 INSERT INTO users(
     id,

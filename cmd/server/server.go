@@ -13,7 +13,7 @@ type Server struct {
 	DBConn *sql.DB
 }
 
-func NewServer(db *sql.DB, config util.Config) (*Server, error) {
+func NewServer(pg *sql.DB, config util.Config) (*Server, error) {
 	app := fiber.New(fiber.Config{
 		Prefork:   true,
 		BodyLimit: 6 * 1024 * 1024,
@@ -21,7 +21,7 @@ func NewServer(db *sql.DB, config util.Config) (*Server, error) {
 	server := &Server{
 		Config: config,
 		Router: app,
-		DBConn: db,
+		DBConn: pg,
 	}
 	server.NewRouter()
 	server.Static()
