@@ -13,7 +13,7 @@ func (s *Server) NewRouter() {
 		a.Get("/", func(c *fiber.Ctx) error {
 			return c.SendString("Hello, World!")
 		})
-		routers.NewUserRouter(a, q)
+		routers.NewUserRouter(a, q, s.TokenMaker)
 	}
 
 }

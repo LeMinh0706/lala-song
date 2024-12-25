@@ -9,12 +9,13 @@ package wire
 import (
 	"github.com/LeMinh0706/lala-song/internal/db"
 	"github.com/LeMinh0706/lala-song/internal/module/user"
+	"github.com/LeMinh0706/lala-song/token"
 )
 
 // Injectors from user.wire.go:
 
-func InitUserRouterHandler(q *db.Queries) (*user.UserController, error) {
+func InitUserRouterHandler(q *db.Queries, token2 token.Maker) (*user.UserController, error) {
 	iUserService := user.NewUserService(q)
-	userController := user.NewUserController(iUserService)
+	userController := user.NewUserController(iUserService, token2)
 	return userController, nil
 }

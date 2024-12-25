@@ -5,6 +5,7 @@ import (
 
 	"github.com/LeMinh0706/lala-song/internal/db"
 	"github.com/LeMinh0706/lala-song/util"
+	"github.com/google/uuid"
 )
 
 type UserService struct {
@@ -26,8 +27,23 @@ func (u *UserService) Login(ctx context.Context, username string, password strin
 }
 
 // Register implements IUserService.
-func (u *UserService) Register(ctx context.Context, arg db.RegisterParams) (db.User, error) {
-	panic("unimplemented")
+func (u *UserService) Register(ctx context.Context, req Register) (db.User, error) {
+	var res db.User
+	tokenId, _ := uuid.NewRandom()
+	hash, _ := util.HashPassword(req.Password)
+	arg := db.RegisterParams{
+		ID:       tokenId,
+		Username: req.Username,
+		Password: hash,
+		Fullname: req.Fullname,
+		Gender:   req.Gender,
+		Avt:      util.RandomAvatar(req.Gender),
+	}
+	user, err := u.q.Register(ctx, arg)
+	if err != nil {
+		return res, err
+	}
+	return user, nil
 }
 
 func NewUserService(q *db.Queries) IUserService {
