@@ -79,7 +79,7 @@ func (u *UserController) Login(f *fiber.Ctx) error {
 // @Security BearerAuth
 // @Success      200  {object}  db.GetMeRow{}
 // @Failure      500  {object}  res.ErrSwaggerJson
-// @Router       /accounts/me [get]
+// @Router       /users/me [get]
 func (u *UserController) GetMe(f *fiber.Ctx) error {
 	auth := f.Locals(middlewares.AuthorizationPayloadKey).(*token.Payload)
 

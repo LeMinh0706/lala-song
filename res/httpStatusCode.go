@@ -14,7 +14,7 @@ const (
 	ErrBadRequestPageSize = 40002
 	ErrBadRequestMime     = 40003
 	ErrBadRequestId       = 40004
-	ErrImageLen           = 40005
+	ErrAddSinger          = 40005
 	ErrImageSize          = 40006
 	ErrGender             = 40007
 	ErrDistance           = 40017
@@ -60,6 +60,7 @@ const (
 	ResetPasswordTimeOut  = 40309
 	CantDelete            = 40425
 	ErrBadRequestQuery    = 40023
+	ErrSingerNotfound     = 40423
 )
 
 var msg = map[int]string{
@@ -71,12 +72,12 @@ var msg = map[int]string{
 	AddEmail:              "Add email complete",
 	SeenNoti:              "Seen notification success",
 	DeleteNoti:            "Delete notification success",
-	ErrBadRequest:         "Bad request",
+	ErrBadRequest:         "Yêu cầu không hợp lệ",
 	ErrBadRequestPage:     "Trang phải là số và lớn hơn 1",
 	ErrBadRequestPageSize: "Số lượng phải lớn hơn 1",
 	ErrBadRequestQuery:    "Trang và số lượng phải lớn hơn 1",
 	ErrBadRequestMime:     "Chỉ có thể dùng định dạng hình ảnh với .png, .jpg, .jpeg, .gif",
-	ErrImageLen:           "Images shoud less than 10",
+	ErrAddSinger:          "Images shoud less than 10",
 	ErrGender:             "Giới tính chỉ có thể 0 (nữ) hoặc 1 (nam)",
 	ErrUnauthorize:        "Unauthorized",
 	ErrInvalid:            "Invalid Token",
@@ -87,7 +88,7 @@ var msg = map[int]string{
 	ErrFindPost:           "Không tìm thấy bài hát",
 	ErrUnlike:             "You didn't like this post yet",
 	ErrLike:               "You have liked post yet",
-	ErrFileTooLarge:       "File too large, only allowed 4MB",
+	ErrFileTooLarge:       "File quá lớn, chỉ có thể dùng file dưới 10MB",
 	ErrWrongPassword:      "Wrong password",
 	ErrEmailExists:        "Email exists",
 	ErrEmailNotExists:     "Email doesn't exist",
@@ -119,6 +120,8 @@ var msg = map[int]string{
 	CantDelete:            "Notification not found",
 	ErrVerify:             "Please wait for approval",
 	ErrNotAdmin:           "Access denied",
+	ErrBadRequestId:       "Không tìm thấy nội dung",
+	ErrSingerNotfound:     "Không tìm thấy nghệ sĩ",
 }
 
 // ErrOutOfDate:   "Token is out of date",

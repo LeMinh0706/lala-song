@@ -9,10 +9,11 @@ import (
 )
 
 type Querier interface {
+	CountSinger(ctx context.Context) (int64, error)
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
-	GetListSinger(ctx context.Context, arg GetListSingerParams) ([]Singer, error)
+	GetListSinger(ctx context.Context, arg GetListSingerParams) ([]GetListSingerRow, error)
 	GetMe(ctx context.Context, username string) (GetMeRow, error)
-	GetSinger(ctx context.Context, id int64) (Singer, error)
+	GetSinger(ctx context.Context, id int64) (GetSingerRow, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
 }

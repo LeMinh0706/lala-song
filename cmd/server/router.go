@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/LeMinh0706/lala-song/internal/initialize"
+	"github.com/LeMinh0706/lala-song/internal/module/singer"
 	"github.com/LeMinh0706/lala-song/internal/module/user"
 	_ "github.com/LeMinh0706/lala-song/swag/docs"
 	"github.com/gofiber/swagger"
@@ -15,5 +16,6 @@ func (s *Server) NewRouter() {
 	a := s.Router.Group("/api")
 	{
 		user.NewUserRouter(a, initService.UserService, s.TokenMaker)
+		singer.NewSingerRouter(a, initService.SingerService, s.TokenMaker)
 	}
 }

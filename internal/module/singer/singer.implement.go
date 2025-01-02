@@ -11,15 +11,23 @@ type SingerService struct {
 }
 
 // GetListSinger implements ISingerService.
-func (s *SingerService) GetListSinger(ctx context.Context, page int32, page_size int32) ([]db.Singer, error) {
-	panic("unimplemented")
+func (s *SingerService) GetListSinger(ctx context.Context, page int32, page_size int32) ([]db.GetListSingerRow, int64) {
+	list, _ := s.q.GetListSinger(ctx, db.GetListSingerParams{
+		Limit:  page_size,
+		Offset: (page - 1) * page_size,
+	})
+	count, _ := s.q.CountSinger(ctx)
+	if list == nil {
+		return []db.GetListSingerRow{}, count
+	}
+	return list, count
 }
 
 // GetSinger implements ISingerService.
-func (s *SingerService) GetSinger(ctx context.Context, id int64) (*db.Singer, error) {
+func (s *SingerService) GetSinger(ctx context.Context, id int64) (*db.GetSingerRow, error) {
 	singer, err := s.q.GetSinger(ctx, id)
 	if err != nil {
-		return &db.Singer{}, nil
+		return &db.GetSingerRow{}, err
 	}
 	return &singer, err
 }

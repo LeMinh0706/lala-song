@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const countSinger = `-- name: CountSinger :one
+SELECT count(id) FROM singers
+`
+
+func (q *Queries) CountSinger(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countSinger)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createSinger = `-- name: CreateSinger :one
 INSERT INTO singers (
     fullname,
@@ -36,7 +47,8 @@ func (q *Queries) CreateSinger(ctx context.Context, arg CreateSingerParams) (Sin
 }
 
 const getListSinger = `-- name: GetListSinger :many
-SELECT id, fullname, image_url, is_deleted FROM singers
+SELECT id, fullname, image_url FROM singers
+ORDER BY id DESC
 LIMIT $1
 OFFSET $2
 `
@@ -46,21 +58,22 @@ type GetListSingerParams struct {
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) GetListSinger(ctx context.Context, arg GetListSingerParams) ([]Singer, error) {
+type GetListSingerRow struct {
+	ID       int64  `json:"id"`
+	Fullname string `json:"fullname"`
+	ImageUrl string `json:"image_url"`
+}
+
+func (q *Queries) GetListSinger(ctx context.Context, arg GetListSingerParams) ([]GetListSingerRow, error) {
 	rows, err := q.db.QueryContext(ctx, getListSinger, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []Singer{}
+	items := []GetListSingerRow{}
 	for rows.Next() {
-		var i Singer
-		if err := rows.Scan(
-			&i.ID,
-			&i.Fullname,
-			&i.ImageUrl,
-			&i.IsDeleted,
-		); err != nil {
+		var i GetListSingerRow
+		if err := rows.Scan(&i.ID, &i.Fullname, &i.ImageUrl); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -75,18 +88,19 @@ func (q *Queries) GetListSinger(ctx context.Context, arg GetListSingerParams) ([
 }
 
 const getSinger = `-- name: GetSinger :one
-SELECT id, fullname, image_url, is_deleted FROM singers 
+SELECT id, fullname, image_url FROM singers 
 WHERE id = $1
 `
 
-func (q *Queries) GetSinger(ctx context.Context, id int64) (Singer, error) {
+type GetSingerRow struct {
+	ID       int64  `json:"id"`
+	Fullname string `json:"fullname"`
+	ImageUrl string `json:"image_url"`
+}
+
+func (q *Queries) GetSinger(ctx context.Context, id int64) (GetSingerRow, error) {
 	row := q.db.QueryRowContext(ctx, getSinger, id)
-	var i Singer
-	err := row.Scan(
-		&i.ID,
-		&i.Fullname,
-		&i.ImageUrl,
-		&i.IsDeleted,
-	)
+	var i GetSingerRow
+	err := row.Scan(&i.ID, &i.Fullname, &i.ImageUrl)
 	return i, err
 }
