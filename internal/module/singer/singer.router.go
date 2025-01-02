@@ -6,6 +6,5 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewSingerRouter(f *fiber.Router, q *db.Queries, token token.Maker) {
-
+func NewSingerRouter(f fiber.Router, q *db.Queries, token token.Maker) {
 }
