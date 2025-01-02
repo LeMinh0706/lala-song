@@ -22,10 +22,21 @@ func NewSingerController(service ISingerService, token token.Maker) *SingerContr
 	}
 }
 
+// Singer godoc
+// @Summary      Create Singer
+// @Description  Create Singer
+// @Tags         Singers
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        image formData file false "Image comment"
+// @Security BearerAuth
+// @Success      201
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /singers [post]
 func (s *SingerController) CreateSinger(f *fiber.Ctx) error {
 	file, err := f.FormFile("image")
 	if err != nil {
-		return res.ErrorNonKnow(f, err.Error())
+		return res.ErrorResponse(f, res.ErrBadRequestMime)
 	}
 	filename := fmt.Sprintf("upload/%s/%d%s", "genres", time.Now().Unix(), filepath.Ext(file.Filename))
 	err = f.SaveFile(file, filename)
