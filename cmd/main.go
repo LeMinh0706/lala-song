@@ -21,7 +21,7 @@ import (
 // @in header
 // @name Authorization
 
-// @host 0.0.0.0:80
+// @host 54.254.208.243:80
 // @BasePath /api
 
 // @schema bearer
