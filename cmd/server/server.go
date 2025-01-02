@@ -24,7 +24,7 @@ func NewServer(pg *sql.DB, config util.Config) (*Server, error) {
 	}
 	app := fiber.New(fiber.Config{
 		Prefork:   true,
-		BodyLimit: 6 * 1024 * 1024,
+		BodyLimit: 24 * 1024 * 1024,
 	})
 	app.Use(logger.New(logger.Config{
 		Format: "[${ip}]:${port} ${status} - ${method} ${path} ${latency}\n",

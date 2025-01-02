@@ -1,5 +1,14 @@
 basePath: /api
 definitions:
+  db.GetListSingerRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+    type: object
   db.GetMeRow:
     properties:
       avt:
@@ -11,6 +20,15 @@ definitions:
       role_id:
         type: integer
     type: object
+  db.GetSingerRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+    type: object
   res.ErrSwaggerJson:
     properties:
       code:
@@ -18,6 +36,15 @@ definitions:
       data: {}
       message:
         type: string
+    type: object
+  singer.SingersResponse:
+    properties:
+      singers:
+        items:
+          $ref: '#/definitions/db.GetListSingerRow'
+        type: array
+      total:
+        type: integer
     type: object
   user.Login:
     properties:
@@ -68,33 +95,46 @@ info:
   title: Fiber Example API
   version: "1.0"
 paths:
-  /accounts/me:
+  /singers:
     get:
       consumes:
       - application/json
-      description: All your account is in here ->
+      description: Get list singers with page and page size (Limit-Offset)
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/db.GetMeRow'
+            $ref: '#/definitions/singer.SingersResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/res.ErrSwaggerJson'
-      security:
-      - BearerAuth: []
-      summary: It's you
+      summary: Get list singers
       tags:
-      - Users
-  /singers:
+      - Singers
     post:
       consumes:
       - multipart/form-data
       description: Create Singer
       parameters:
+      - description: fullname
+        in: formData
+        name: fullname
+        required: true
+        type: string
       - description: Image comment
         in: formData
         name: image
@@ -111,6 +151,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Create Singer
+      tags:
+      - Singers
+  /singers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get singer with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetSingerRow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get singer with id
       tags:
       - Singers
   /users/login:
@@ -137,6 +202,27 @@ paths:
           schema:
             $ref: '#/definitions/res.ErrSwaggerJson'
       summary: Login user
+      tags:
+      - Users
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      description: All your account is in here ->
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetMeRow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: It's you
       tags:
       - Users
   /users/register:

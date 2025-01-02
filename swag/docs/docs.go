@@ -23,14 +23,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/accounts/me": {
+        "/singers": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "All your account is in here -\u003e",
+                "description": "Get list singers with page and page size (Limit-Offset)",
                 "consumes": [
                     "application/json"
                 ],
@@ -38,14 +33,30 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Singers"
                 ],
-                "summary": "It's you",
+                "summary": "Get list singers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/db.GetMeRow"
+                            "$ref": "#/definitions/singer.SingersResponse"
                         }
                     },
                     "500": {
@@ -55,9 +66,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/singers": {
+            },
             "post": {
                 "security": [
                     {
@@ -77,6 +86,13 @@ const docTemplate = `{
                 "summary": "Create Singer",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "fullname",
+                        "name": "fullname",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
                         "type": "file",
                         "description": "Image comment",
                         "name": "image",
@@ -86,6 +102,44 @@ const docTemplate = `{
                 "responses": {
                     "201": {
                         "description": "Created"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/singers/{id}": {
+            "get": {
+                "description": "Get singer with id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Singers"
+                ],
+                "summary": "Get singer with id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.GetSingerRow"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -136,6 +190,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "All your account is in here -\u003e",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "It's you",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.GetMeRow"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "description": "Join with us",
@@ -172,6 +260,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "db.GetListSingerRow": {
+            "type": "object",
+            "properties": {
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                }
+            }
+        },
         "db.GetMeRow": {
             "type": "object",
             "properties": {
@@ -189,6 +291,20 @@ const docTemplate = `{
                 }
             }
         },
+        "db.GetSingerRow": {
+            "type": "object",
+            "properties": {
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                }
+            }
+        },
         "res.ErrSwaggerJson": {
             "type": "object",
             "properties": {
@@ -198,6 +314,20 @@ const docTemplate = `{
                 "data": {},
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "singer.SingersResponse": {
+            "type": "object",
+            "properties": {
+                "singers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.GetListSingerRow"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
