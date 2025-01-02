@@ -14,7 +14,7 @@
         },
         "version": "1.0"
     },
-    "host": "0.0.0.0:80",
+    "host": "54.254.208.243:80",
     "basePath": "/api",
     "paths": {
         "/accounts/me": {
@@ -41,6 +41,45 @@
                         "schema": {
                             "$ref": "#/definitions/db.GetMeRow"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/singers": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Singer",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Singers"
+                ],
+                "summary": "Create Singer",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Image comment",
+                        "name": "image",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
                     },
                     "500": {
                         "description": "Internal Server Error",

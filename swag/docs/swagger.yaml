@@ -55,7 +55,7 @@ definitions:
     - password
     - username
     type: object
-host: 0.0.0.0:80
+host: 54.254.208.243:80
 info:
   contact:
     email: fiber@swagger.io
@@ -89,6 +89,30 @@ paths:
       summary: It's you
       tags:
       - Users
+  /singers:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Singer
+      parameters:
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create Singer
+      tags:
+      - Singers
   /users/login:
     post:
       consumes:
