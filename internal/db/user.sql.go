@@ -12,6 +12,30 @@ import (
 	"github.com/google/uuid"
 )
 
+const getMe = `-- name: GetMe :one
+SELECT fullname, gender, avt, role_id FROM users
+WHERE username = $1
+`
+
+type GetMeRow struct {
+	Fullname string `json:"fullname"`
+	Gender   int32  `json:"gender"`
+	Avt      string `json:"avt"`
+	RoleID   int32  `json:"role_id"`
+}
+
+func (q *Queries) GetMe(ctx context.Context, username string) (GetMeRow, error) {
+	row := q.db.QueryRowContext(ctx, getMe, username)
+	var i GetMeRow
+	err := row.Scan(
+		&i.Fullname,
+		&i.Gender,
+		&i.Avt,
+		&i.RoleID,
+	)
+	return i, err
+}
+
 const login = `-- name: Login :one
 SELECT u.id, u.username, u.password, u.fullname, u.gender, u.avt, u.role_id, u.created_at, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1
 `

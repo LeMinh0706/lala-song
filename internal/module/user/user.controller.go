@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/LeMinh0706/lala-song/internal/handler"
+	"github.com/LeMinh0706/lala-song/internal/middlewares"
 	"github.com/LeMinh0706/lala-song/res"
 	"github.com/LeMinh0706/lala-song/token"
 	"github.com/gofiber/fiber/v2"
@@ -67,4 +68,25 @@ func (u *UserController) Login(f *fiber.Ctx) error {
 
 	response := LoginResponse{AccessToken: token}
 	return res.SuccessResponse(f, 201, response)
+}
+
+// User godoc
+// @Summary      It's you
+// @Description  All your account is in here ->
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Security BearerAuth
+// @Success      200  {object}  db.GetMeRow{}
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /accounts/me [get]
+func (u *UserController) GetMe(f *fiber.Ctx) error {
+	auth := f.Locals(middlewares.AuthorizationPayloadKey).(*token.Payload)
+
+	user, err := u.service.GetMe(f.Context(), auth.Username)
+	if err != nil {
+		return res.ErrorResponse(f, res.ErrUnauthorize)
+	}
+
+	return res.SuccessResponse(f, 200, user)
 }

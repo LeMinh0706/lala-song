@@ -12,6 +12,15 @@ type UserService struct {
 	q *db.Queries
 }
 
+// GetMe implements IUserService.
+func (u *UserService) GetMe(ctx context.Context, username string) (db.GetMeRow, error) {
+	user, err := u.q.GetMe(ctx, username)
+	if err != nil {
+		return db.GetMeRow{}, err
+	}
+	return user, nil
+}
+
 // Login implements IUserService.
 func (u *UserService) Login(ctx context.Context, username string, password string) (db.LoginRow, error) {
 	var res db.LoginRow
