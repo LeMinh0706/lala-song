@@ -13,8 +13,8 @@ type UserService struct {
 }
 
 // Login implements IUserService.
-func (u *UserService) Login(ctx context.Context, username string, password string) (db.User, error) {
-	var res db.User
+func (u *UserService) Login(ctx context.Context, username string, password string) (db.LoginRow, error) {
+	var res db.LoginRow
 	user, err := u.q.Login(ctx, username)
 	if err != nil {
 		return res, err

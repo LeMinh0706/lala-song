@@ -1,0 +1,108 @@
+basePath: /api
+definitions:
+  res.ErrSwaggerJson:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  user.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.LoginResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  user.Register:
+    properties:
+      fullname:
+        maxLength: 16
+        minLength: 6
+        type: string
+      gender:
+        maximum: 1
+        minimum: 0
+        type: integer
+      password:
+        maxLength: 16
+        minLength: 6
+        type: string
+      username:
+        maxLength: 16
+        minLength: 6
+        type: string
+    required:
+    - fullname
+    - gender
+    - password
+    - username
+    type: object
+host: localhost:8070
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
+paths:
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to be more handsome
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.LoginResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Login user
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Join with us
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.Register'
+      produces:
+      - application/json
+      responses:
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Register user
+      tags:
+      - Users
+swagger: "2.0"

@@ -12,8 +12,8 @@ type JWTMaker struct {
 }
 
 // CreateToken implements Maker.
-func (j *JWTMaker) CreateToken(username string, duration time.Duration) (string, error) {
-	payload, err := NewPayload(username, duration)
+func (j *JWTMaker) CreateToken(username string, role string, duration time.Duration) (string, error) {
+	payload, err := NewPayload(username, role, duration)
 	if err != nil {
 		return "", err
 	}
@@ -21,6 +21,7 @@ func (j *JWTMaker) CreateToken(username string, duration time.Duration) (string,
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":         payload.Id,
 		"username":   payload.Username,
+		"role":       payload.Rolename,
 		"issued_at":  payload.IssuedAt,
 		"expired_at": payload.ExpiredAt,
 	})

@@ -35,19 +35,52 @@ func (q *Queries) CreateSinger(ctx context.Context, arg CreateSingerParams) (Sin
 	return i, err
 }
 
-const getSinger = `-- name: GetSinger :one
-SELECT id, fullname, image_url, is_deleted FROM singers 
-LIMIT $1 
+const getListSinger = `-- name: GetListSinger :many
+SELECT id, fullname, image_url, is_deleted FROM singers
+LIMIT $1
 OFFSET $2
 `
 
-type GetSingerParams struct {
+type GetListSingerParams struct {
 	Limit  int32 `json:"limit"`
 	Offset int32 `json:"offset"`
 }
 
-func (q *Queries) GetSinger(ctx context.Context, arg GetSingerParams) (Singer, error) {
-	row := q.db.QueryRowContext(ctx, getSinger, arg.Limit, arg.Offset)
+func (q *Queries) GetListSinger(ctx context.Context, arg GetListSingerParams) ([]Singer, error) {
+	rows, err := q.db.QueryContext(ctx, getListSinger, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Singer{}
+	for rows.Next() {
+		var i Singer
+		if err := rows.Scan(
+			&i.ID,
+			&i.Fullname,
+			&i.ImageUrl,
+			&i.IsDeleted,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getSinger = `-- name: GetSinger :one
+SELECT id, fullname, image_url, is_deleted FROM singers 
+WHERE id = $1
+`
+
+func (q *Queries) GetSinger(ctx context.Context, id int64) (Singer, error) {
+	row := q.db.QueryRowContext(ctx, getSinger, id)
 	var i Singer
 	err := row.Scan(
 		&i.ID,

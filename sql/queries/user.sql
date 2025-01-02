@@ -12,4 +12,4 @@ INSERT INTO users(
 ) RETURNING *;
 
 -- name: Login :one
-SELECT * FROM users WHERE username = $1;
+SELECT u.*, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1;

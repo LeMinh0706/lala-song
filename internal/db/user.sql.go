@@ -7,17 +7,30 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const login = `-- name: Login :one
-SELECT id, username, password, fullname, gender, avt, role_id, created_at FROM users WHERE username = $1
+SELECT u.id, u.username, u.password, u.fullname, u.gender, u.avt, u.role_id, u.created_at, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1
 `
 
-func (q *Queries) Login(ctx context.Context, username string) (User, error) {
+type LoginRow struct {
+	ID        uuid.UUID `json:"id"`
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
+	Fullname  string    `json:"fullname"`
+	Gender    int32     `json:"gender"`
+	Avt       string    `json:"avt"`
+	RoleID    int32     `json:"role_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Name      string    `json:"name"`
+}
+
+func (q *Queries) Login(ctx context.Context, username string) (LoginRow, error) {
 	row := q.db.QueryRowContext(ctx, login, username)
-	var i User
+	var i LoginRow
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
@@ -27,6 +40,7 @@ func (q *Queries) Login(ctx context.Context, username string) (User, error) {
 		&i.Avt,
 		&i.RoleID,
 		&i.CreatedAt,
+		&i.Name,
 	)
 	return i, err
 }

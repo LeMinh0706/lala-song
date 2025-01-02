@@ -8,9 +8,18 @@ package wire
 
 import (
 	"github.com/LeMinh0706/lala-song/internal/db"
+	"github.com/LeMinh0706/lala-song/internal/module/singer"
 	"github.com/LeMinh0706/lala-song/internal/module/user"
 	"github.com/LeMinh0706/lala-song/token"
 )
+
+// Injectors from singer.wire.go:
+
+func InitSingerRouterHandler(q *db.Queries, token2 token.Maker) (*singer.SingerController, error) {
+	iSingerService := singer.NewSingerService(q)
+	singerController := singer.NewSingerController(iSingerService, token2)
+	return singerController, nil
+}
 
 // Injectors from user.wire.go:
 

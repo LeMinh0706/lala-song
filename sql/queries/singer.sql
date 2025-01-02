@@ -8,5 +8,9 @@ INSERT INTO singers (
 
 -- name: GetSinger :one
 SELECT * FROM singers 
-LIMIT $1 
+WHERE id = $1;
+
+-- name: GetListSinger :many
+SELECT * FROM singers
+LIMIT $1
 OFFSET $2;

@@ -10,8 +10,9 @@ import (
 
 type Querier interface {
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
-	GetSinger(ctx context.Context, arg GetSingerParams) (Singer, error)
-	Login(ctx context.Context, username string) (User, error)
+	GetListSinger(ctx context.Context, arg GetListSingerParams) ([]Singer, error)
+	GetSinger(ctx context.Context, id int64) (Singer, error)
+	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
 }
 

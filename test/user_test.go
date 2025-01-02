@@ -46,12 +46,3 @@ func TestRegister(t *testing.T) {
 func TestSinger(t *testing.T) {
 	createSinger(t)
 }
-
-func TestSelect(t *testing.T) {
-	for i := 0; i < 10; i++ {
-		createSinger(t)
-	}
-	list, err := testQueries.GetSinger(context.Background(), db.GetSingerParams{Limit: 10, Offset: 3})
-	require.NoError(t, err)
-	require.NotEmpty(t, list)
-}

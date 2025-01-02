@@ -35,6 +35,7 @@ func NewServer(pg *sql.DB, config util.Config) (*Server, error) {
 		DBConn:     pg,
 		TokenMaker: token,
 	}
+	EnableCors(server.Router)
 	server.NewRouter()
 	server.Static()
 	return server, nil

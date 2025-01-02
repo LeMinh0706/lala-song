@@ -13,7 +13,7 @@ func EnableCors(app *fiber.App) {
 		AllowMethods:     "GET,POST,PUT,DELETE,PATCH,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Authorization",
 		ExposeHeaders:    "Content-Length",
-		AllowCredentials: true,
+		AllowCredentials: false,
 		MaxAge:           int(12 * time.Hour / time.Second),
 	}))
 }

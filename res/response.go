@@ -26,10 +26,16 @@ func ErrorResponse(f *fiber.Ctx, code int) error {
 	})
 }
 
-func ErrorNonKnow(f *fiber.Ctx, code int, massage string) error {
+func ErrorNonKnow(f *fiber.Ctx, massage string) error {
 	return f.Status(fiber.StatusOK).JSON(ResponseData{
-		Code:    code,
+		Code:    50000,
 		Message: massage,
 		Data:    nil,
 	})
+}
+
+type ErrSwaggerJson struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }

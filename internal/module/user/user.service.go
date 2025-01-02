@@ -8,5 +8,5 @@ import (
 
 type IUserService interface {
 	Register(ctx context.Context, req Register) (db.User, error)
-	Login(ctx context.Context, username, password string) (db.User, error)
+	Login(ctx context.Context, username, password string) (db.LoginRow, error)
 }
