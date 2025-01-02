@@ -17,8 +17,14 @@ import (
 // @contact.email fiber@swagger.io
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @securityDefinitions.apiKey BearerAuth
+// @in header
+// @name Authorization
+
 // @host localhost:8070
 // @BasePath /api
+
+// @schema bearer
 func main() {
 	config, err := util.LoadConfig(".")
 	if err != nil {

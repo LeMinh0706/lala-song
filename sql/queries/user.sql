@@ -13,3 +13,7 @@ INSERT INTO users(
 
 -- name: Login :one
 SELECT u.*, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1;
+
+-- name: GetMe :one
+SELECT fullname, gender, avt, role_id FROM users
+WHERE username = $1;
