@@ -46,6 +46,15 @@ func (q *Queries) CreateSinger(ctx context.Context, arg CreateSingerParams) (Sin
 	return i, err
 }
 
+const deleteSinger = `-- name: DeleteSinger :exec
+UPDATE singers SET is_deletedd = TRUE WHERE id = $1
+`
+
+func (q *Queries) DeleteSinger(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteSinger, id)
+	return err
+}
+
 const getListSinger = `-- name: GetListSinger :many
 SELECT id, fullname, image_url FROM singers
 ORDER BY id DESC
@@ -101,6 +110,34 @@ type GetSingerRow struct {
 func (q *Queries) GetSinger(ctx context.Context, id int64) (GetSingerRow, error) {
 	row := q.db.QueryRowContext(ctx, getSinger, id)
 	var i GetSingerRow
+	err := row.Scan(&i.ID, &i.Fullname, &i.ImageUrl)
+	return i, err
+}
+
+const updateSinger = `-- name: UpdateSinger :one
+UPDATE singers 
+SET 
+    fullname = COALESCE($2, fullname), 
+    image_url = COALESCE($3, image_url)
+WHERE id = $1
+RETURNING id, fullname, image_url
+`
+
+type UpdateSingerParams struct {
+	ID       int64  `json:"id"`
+	Fullname string `json:"fullname"`
+	ImageUrl string `json:"image_url"`
+}
+
+type UpdateSingerRow struct {
+	ID       int64  `json:"id"`
+	Fullname string `json:"fullname"`
+	ImageUrl string `json:"image_url"`
+}
+
+func (q *Queries) UpdateSinger(ctx context.Context, arg UpdateSingerParams) (UpdateSingerRow, error) {
+	row := q.db.QueryRowContext(ctx, updateSinger, arg.ID, arg.Fullname, arg.ImageUrl)
+	var i UpdateSingerRow
 	err := row.Scan(&i.ID, &i.Fullname, &i.ImageUrl)
 	return i, err
 }

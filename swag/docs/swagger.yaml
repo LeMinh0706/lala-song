@@ -138,6 +138,7 @@ paths:
       - description: Image comment
         in: formData
         name: image
+        required: true
         type: file
       produces:
       - application/json
@@ -176,6 +177,40 @@ paths:
           schema:
             $ref: '#/definitions/res.ErrSwaggerJson'
       summary: Get singer with id
+      tags:
+      - Singers
+    put:
+      consumes:
+      - application/json
+      description: Update singer
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: fullname
+        in: formData
+        name: fullname
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetSingerRow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update singer
       tags:
       - Singers
   /users/login:

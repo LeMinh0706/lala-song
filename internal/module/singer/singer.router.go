@@ -17,5 +17,6 @@ func NewSingerRouter(f fiber.Router, service ISingerService, token token.Maker) 
 	auth := singerGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.Post("", sc.CreateSinger)
+		auth.Put("/:id", sc.UpdateSinger)
 	}
 }
