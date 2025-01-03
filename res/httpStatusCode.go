@@ -61,6 +61,7 @@ const (
 	CantDelete            = 40425
 	ErrBadRequestQuery    = 40023
 	ErrSingerNotfound     = 40423
+	ErrUsernameSpace      = 40030
 )
 
 var msg = map[int]string{
@@ -92,6 +93,7 @@ var msg = map[int]string{
 	ErrWrongPassword:      "Wrong password",
 	ErrEmailExists:        "Email exists",
 	ErrEmailNotExists:     "Email doesn't exist",
+	ErrUsernameSpace:      "Username không được có khoảng trống",
 	ErrUsernameChar:       "Username từ 6 đến 16 ký tự",
 	ErrMinPassword:        "Password từ 6 ký tự trở lên",
 	ErrMinFullname:        "Fullname từ 6 ký tự trở lên",
