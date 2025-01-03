@@ -10,6 +10,24 @@ type SingerService struct {
 	q *db.Queries
 }
 
+// UpdateSinger implements ISingerService.
+func (s *SingerService) UpdateSinger(ctx context.Context, id int64, fullname string, avt string) (*db.UpdateSingerRow, error) {
+	update, err := s.q.UpdateSinger(ctx, db.UpdateSingerParams{
+		ID:       id,
+		Fullname: fullname,
+		ImageUrl: avt,
+	})
+	if err != nil {
+		return &db.UpdateSingerRow{}, err
+	}
+	return &update, nil
+}
+
+// DeleteSinger implements ISingerService.
+func (s *SingerService) DeleteSinger(ctx context.Context, id int64) error {
+	panic("unimplemented")
+}
+
 // GetListSinger implements ISingerService.
 func (s *SingerService) GetListSinger(ctx context.Context, page int32, page_size int32) ([]db.GetListSingerRow, int64) {
 	list, _ := s.q.GetListSinger(ctx, db.GetListSingerParams{

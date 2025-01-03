@@ -13,30 +13,30 @@ type UserService struct {
 }
 
 // GetMe implements IUserService.
-func (u *UserService) GetMe(ctx context.Context, username string) (db.GetMeRow, error) {
+func (u *UserService) GetMe(ctx context.Context, username string) (*db.GetMeRow, error) {
 	user, err := u.q.GetMe(ctx, username)
 	if err != nil {
-		return db.GetMeRow{}, err
+		return &db.GetMeRow{}, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 // Login implements IUserService.
-func (u *UserService) Login(ctx context.Context, username string, password string) (db.LoginRow, error) {
+func (u *UserService) Login(ctx context.Context, username string, password string) (*db.LoginRow, error) {
 	var res db.LoginRow
 	user, err := u.q.Login(ctx, username)
 	if err != nil {
-		return res, err
+		return &res, err
 	}
 	err = util.CheckPassword(password, user.Password)
 	if err != nil {
-		return res, err
+		return &res, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 // Register implements IUserService.
-func (u *UserService) Register(ctx context.Context, req Register) (db.User, error) {
+func (u *UserService) Register(ctx context.Context, req Register) (*db.User, error) {
 	var res db.User
 	tokenId, _ := uuid.NewRandom()
 	hash, _ := util.HashPassword(req.Password)
@@ -50,9 +50,9 @@ func (u *UserService) Register(ctx context.Context, req Register) (db.User, erro
 	}
 	user, err := u.q.Register(ctx, arg)
 	if err != nil {
-		return res, err
+		return &res, err
 	}
-	return user, nil
+	return &user, nil
 }
 
 func NewUserService(q *db.Queries) IUserService {

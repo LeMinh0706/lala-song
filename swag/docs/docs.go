@@ -96,7 +96,8 @@ const docTemplate = `{
                         "type": "file",
                         "description": "Image comment",
                         "name": "image",
-                        "in": "formData"
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -132,6 +133,59 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.GetSingerRow"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update singer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Singers"
+                ],
+                "summary": "Update singer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "fullname",
+                        "name": "fullname",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image comment",
+                        "name": "image",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
