@@ -47,6 +47,9 @@ func (u *UserController) Register(f *fiber.Ctx) error {
 
 	_, err := u.service.Register(f.Context(), req)
 	if err != nil {
+		if err.Error() == res.UserExists {
+			return res.ErrorResponse(f, res.ErrUserExist)
+		}
 		return res.ErrorNonKnow(f, err.Error())
 	}
 	return res.SuccessResponse(f, 201, nil)

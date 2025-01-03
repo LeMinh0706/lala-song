@@ -82,7 +82,7 @@ var msg = map[int]string{
 	ErrUnauthorize:        "Unauthorized",
 	ErrInvalid:            "Invalid Token",
 	ErrYourSelf:           "Không có quyền truy cập",
-	ErrUserExist:          "User exist",
+	ErrUserExist:          "Tài khoảng này đã tồn tại",
 	ErrLogin:              "Sai tài khoản hoặc mật khẩu",
 	ErrNotFoundUser:       "User not found",
 	ErrFindPost:           "Không tìm thấy bài hát",
@@ -129,7 +129,7 @@ var msg = map[int]string{
 // real err
 var (
 	EmailExists   = "ERROR: duplicate key value violates unique constraint \"users_email_key\" (SQLSTATE 23505)"
-	UserExists    = "ERROR: duplicate key value violates unique constraint \"users_username_key\" (SQLSTATE 23505)"
+	UserExists    = "pq: duplicate key value violates unique constraint \"users_username_key\""
 	WrongUsername = "wrong username"
 	WrongPassword = "wrong password"
 	FollowGhost   = "ERROR: insert or update on table \"follower\" violates foreign key constraint \"follower_to_follow_fkey\" (SQLSTATE 23503)"
