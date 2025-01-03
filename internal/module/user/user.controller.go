@@ -7,6 +7,7 @@ import (
 	"github.com/LeMinh0706/lala-song/internal/middlewares"
 	"github.com/LeMinh0706/lala-song/res"
 	"github.com/LeMinh0706/lala-song/token"
+	"github.com/LeMinh0706/lala-song/util"
 	"github.com/go-playground/validator/v10"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,6 +44,10 @@ func (u *UserController) Register(f *fiber.Ctx) error {
 
 	if err := validate.Struct(req); err != nil {
 		return handler.ValidateRegister(f, err)
+	}
+
+	if !util.UsernameNotSpace(req.Username) {
+		return res.ErrorResponse(f, res.ErrUsernameSpace)
 	}
 
 	_, err := u.service.Register(f.Context(), req)
