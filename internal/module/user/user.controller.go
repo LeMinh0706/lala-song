@@ -7,6 +7,8 @@ import (
 	"github.com/LeMinh0706/lala-song/internal/middlewares"
 	"github.com/LeMinh0706/lala-song/res"
 	"github.com/LeMinh0706/lala-song/token"
+	"github.com/go-playground/validator/v10"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,6 +16,8 @@ type UserController struct {
 	service IUserService
 	token   token.Maker
 }
+
+var validate = validator.New()
 
 func NewUserController(service IUserService, token token.Maker) *UserController {
 	return &UserController{
@@ -34,11 +38,19 @@ func NewUserController(service IUserService, token token.Maker) *UserController 
 func (u *UserController) Register(f *fiber.Ctx) error {
 	var req Register
 	if err := f.BodyParser(&req); err != nil {
+		return res.ErrorResponse(f, 40000)
+	}
+
+	if err := validate.Struct(req); err != nil {
 		return handler.ValidateRegister(f, err)
 	}
+
 	_, err := u.service.Register(f.Context(), req)
 	if err != nil {
-		return handler.ValidateRegister(f, err)
+		if err.Error() == res.UserExists {
+			return res.ErrorResponse(f, res.ErrUserExist)
+		}
+		return res.ErrorNonKnow(f, err.Error())
 	}
 	return res.SuccessResponse(f, 201, nil)
 }
