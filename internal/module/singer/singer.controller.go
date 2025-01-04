@@ -35,7 +35,7 @@ func NewSingerController(service ISingerService, token token.Maker) *SingerContr
 // @Param        fullname formData string true "fullname"
 // @Param        image formData file true "Image comment"
 // @Security BearerAuth
-// @Success      201
+// @Success      201  {object} 	db.Singer
 // @Failure      500  {object}  res.ErrSwaggerJson
 // @Router       /singers [post]
 func (s *SingerController) CreateSinger(f *fiber.Ctx) error {
@@ -67,7 +67,7 @@ func (s *SingerController) CreateSinger(f *fiber.Ctx) error {
 		return res.ErrorResponse(f, res.ErrAddSinger)
 	}
 
-	return res.SuccessResponse(f, 201, singer)
+	return res.SuccessResponse(f, 201, &singer)
 
 }
 
@@ -179,4 +179,31 @@ func (s *SingerController) UpdateSinger(f *fiber.Ctx) error {
 		return res.ErrorNonKnow(f, err.Error())
 	}
 	return res.SuccessResponse(f, 201, update)
+}
+
+// Singer godoc
+// @Summary      Get singer with id
+// @Description  Get singer with id
+// @Tags         Singers
+// @Accept       json
+// @Produce      json
+// @Param        id path int true "ID"
+// @Security BearerAuth
+// @Success      204  "No content"
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /singers/soft/{id} [post]
+func (s *SingerController) DeleteSinger(f *fiber.Ctx) error {
+	idStr := f.Params("id")
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return res.ErrorResponse(f, res.ErrBadRequestId)
+	}
+
+	err = s.service.DeleteSinger(f.Context(), id)
+	if err != nil {
+		return res.ErrorNonKnow(f, err.Error())
+	}
+
+	return res.SuccessResponse(f, 204, nil)
 }

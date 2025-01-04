@@ -10,7 +10,7 @@ import (
 )
 
 const countSinger = `-- name: CountSinger :one
-SELECT count(id) FROM singers
+SELECT count(id) FROM singers WHERE is_deleted != TRUE
 `
 
 func (q *Queries) CountSinger(ctx context.Context) (int64, error) {
@@ -47,7 +47,7 @@ func (q *Queries) CreateSinger(ctx context.Context, arg CreateSingerParams) (Sin
 }
 
 const deleteSinger = `-- name: DeleteSinger :exec
-UPDATE singers SET is_deletedd = TRUE WHERE id = $1
+UPDATE singers SET is_deleted = TRUE WHERE id = $1
 `
 
 func (q *Queries) DeleteSinger(ctx context.Context, id int64) error {
@@ -57,6 +57,7 @@ func (q *Queries) DeleteSinger(ctx context.Context, id int64) error {
 
 const getListSinger = `-- name: GetListSinger :many
 SELECT id, fullname, image_url FROM singers
+WHERE is_deleted != TRUE
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2
@@ -98,7 +99,7 @@ func (q *Queries) GetListSinger(ctx context.Context, arg GetListSingerParams) ([
 
 const getSinger = `-- name: GetSinger :one
 SELECT id, fullname, image_url FROM singers 
-WHERE id = $1
+WHERE id = $1 AND is_deleted != TRUE
 `
 
 type GetSingerRow struct {

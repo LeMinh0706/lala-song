@@ -12,11 +12,14 @@ func NewSingerRouter(f fiber.Router, service ISingerService, token token.Maker) 
 	{
 		singerGroup.Get("/:id", sc.GetSingerById)
 		singerGroup.Get("", sc.GetSingers)
+
 	}
 
-	auth := singerGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
+	auth := singerGroup.Group("").Use(middlewares.AuthorizeAdminMiddleware(token))
 	{
 		auth.Post("", sc.CreateSinger)
 		auth.Put("/:id", sc.UpdateSinger)
+		auth.Post("/soft/:id", sc.DeleteSinger)
 	}
+
 }
