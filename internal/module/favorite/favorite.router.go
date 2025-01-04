@@ -1,0 +1,3 @@
+package favorite
+
+func NewFavoriteRouter(){}

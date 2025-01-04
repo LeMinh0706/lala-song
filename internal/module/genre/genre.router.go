@@ -1,0 +1,3 @@
+package genre
+
+func NewGenreRouter(){}

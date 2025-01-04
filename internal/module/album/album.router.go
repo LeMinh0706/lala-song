@@ -1,0 +1,3 @@
+package album
+
+func NewAlbumRouter(){}
