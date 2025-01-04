@@ -35,7 +35,7 @@ CREATE TABLE "album" (
   "image_url" varchar NOT NULL,
   "is_deleted" bool NOT NULL DEFAULT false,
   "singer_id" bigint NOT NULL,
-  "created_at" timestamptz NOT NULL
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "singer_song" (
@@ -51,7 +51,7 @@ CREATE TABLE "songs" (
   "lyric_file" varchar NOT NULL,
   "is_deleted" bool NOT NULL DEFAULT false,
   "album_id" bigint NOT NULL,
-  "created_at" timestamptz NOT NULL
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "song_genre" (

@@ -9,14 +9,20 @@ import (
 )
 
 type Querier interface {
+	CountGenre(ctx context.Context) (int64, error)
 	CountSinger(ctx context.Context) (int64, error)
+	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
+	DeleteGenre(ctx context.Context, id int64) error
 	DeleteSinger(ctx context.Context, id int64) error
+	GetGenre(ctx context.Context, id int64) (Genre, error)
+	GetListGenre(ctx context.Context, arg GetListGenreParams) ([]Genre, error)
 	GetListSinger(ctx context.Context, arg GetListSingerParams) ([]GetListSingerRow, error)
 	GetMe(ctx context.Context, username string) (GetMeRow, error)
 	GetSinger(ctx context.Context, id int64) (GetSingerRow, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
+	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
 	UpdateSinger(ctx context.Context, arg UpdateSingerParams) (UpdateSingerRow, error)
 }
 
