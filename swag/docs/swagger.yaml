@@ -29,6 +29,17 @@ definitions:
       image_url:
         type: string
     type: object
+  db.Singer:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_deleted:
+        type: boolean
+    type: object
   res.ErrSwaggerJson:
     properties:
       code:
@@ -145,6 +156,8 @@ paths:
       responses:
         "201":
           description: Created
+          schema:
+            $ref: '#/definitions/db.Singer'
         "500":
           description: Internal Server Error
           schema:
@@ -211,6 +224,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Update singer
+      tags:
+      - Singers
+  /singers/soft/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Get singer with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Get singer with id
       tags:
       - Singers
   /users/login:

@@ -12,9 +12,11 @@ func NewUserRouter(f fiber.Router, service IUserService, token token.Maker) {
 	{
 		userGroup.Post("/login", uc.Login)
 		userGroup.Post("/register", uc.Register)
+		userGroup.Get("/test", middlewares.AuthorizeAdminMiddleware(token), uc.GetMe)
 	}
 	auth := userGroup.Group("").Use(middlewares.AuthorizeMiddleware(token))
 	{
 		auth.Get("/me", uc.GetMe)
 	}
+
 }

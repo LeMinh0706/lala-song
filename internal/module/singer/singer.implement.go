@@ -25,7 +25,11 @@ func (s *SingerService) UpdateSinger(ctx context.Context, id int64, fullname str
 
 // DeleteSinger implements ISingerService.
 func (s *SingerService) DeleteSinger(ctx context.Context, id int64) error {
-	panic("unimplemented")
+	err := s.q.DeleteSinger(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetListSinger implements ISingerService.

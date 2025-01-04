@@ -62,6 +62,7 @@ const (
 	ErrBadRequestQuery    = 40023
 	ErrSingerNotfound     = 40423
 	ErrUsernameSpace      = 40030
+	ErrForbidden          = 40301
 )
 
 var msg = map[int]string{
@@ -124,6 +125,7 @@ var msg = map[int]string{
 	ErrNotAdmin:           "Access denied",
 	ErrBadRequestId:       "Không tìm thấy nội dung",
 	ErrSingerNotfound:     "Không tìm thấy nghệ sĩ",
+	ErrForbidden:          "Chưa đủ có quyền thực hiện",
 }
 
 // ErrOutOfDate:   "Token is out of date",

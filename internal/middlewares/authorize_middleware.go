@@ -13,9 +13,6 @@ const (
 	AuthorizationPayloadKey = "authorization_payload"
 )
 
-// Update middle with less code
-// Error is in Token package
-// Use ErrNonKnow but knowing in advance :))
 func AuthorizeMiddleware(tokenMaker token.Maker) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		authorizationHeader := ctx.Get(AuthorizationHeaderKey)
@@ -36,6 +33,34 @@ func AuthorizeMiddleware(tokenMaker token.Maker) fiber.Handler {
 			return res.ErrorResponse(ctx, 40101)
 		}
 		ctx.Locals(AuthorizationPayloadKey, payload)
+		return ctx.Next()
+	}
+}
+func AuthorizeAdminMiddleware(tokenMaker token.Maker) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		authorizationHeader := ctx.Get(AuthorizationHeaderKey)
+		if len(authorizationHeader) == 0 {
+			return res.ErrorResponse(ctx, 40101)
+		}
+
+		if !strings.HasPrefix(authorizationHeader, "Bearer") {
+			authorizationHeader = "Bearer " + authorizationHeader
+			ctx.Set(AuthorizationHeaderKey, authorizationHeader)
+		}
+
+		fields := strings.Fields(authorizationHeader)
+
+		accessToken := fields[1]
+		payload, err := tokenMaker.VerifyToken(accessToken)
+		if err != nil {
+			return res.ErrorResponse(ctx, 40101)
+		}
+		// Kiểm tra role
+		if payload.Rolename != "Admin" {
+			return res.ErrorResponse(ctx, 40301)
+		}
+		ctx.Locals(AuthorizationPayloadKey, payload)
+
 		return ctx.Next()
 	}
 }
