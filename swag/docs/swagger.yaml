@@ -49,6 +49,15 @@ definitions:
       is_deleted:
         type: boolean
     type: object
+  genre.GenresResponse:
+    properties:
+      genres:
+        items:
+          $ref: '#/definitions/db.Genre'
+        type: array
+      total:
+        type: integer
+    type: object
   res.ErrSwaggerJson:
     properties:
       code:
@@ -116,6 +125,35 @@ info:
   version: "1.0"
 paths:
   /genres:
+    get:
+      consumes:
+      - application/json
+      description: Get list genres with page and page size (Limit-Offset)
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/genre.GenresResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get list genres
+      tags:
+      - Genres
     post:
       consumes:
       - multipart/form-data
@@ -145,6 +183,89 @@ paths:
       security:
       - BearerAuth: []
       summary: Create Genre
+      tags:
+      - Genres
+  /genres/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete genre with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete genre with id
+      tags:
+      - Genres
+    get:
+      consumes:
+      - application/json
+      description: Get genre with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Genre'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get genre with id
+      tags:
+      - Genres
+    put:
+      consumes:
+      - application/json
+      description: Update genre
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: name
+        in: formData
+        name: name
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Genre'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update genre
       tags:
       - Genres
   /singers:

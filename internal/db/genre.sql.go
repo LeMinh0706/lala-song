@@ -109,7 +109,7 @@ func (q *Queries) GetListGenre(ctx context.Context, arg GetListGenreParams) ([]G
 const updateGenre = `-- name: UpdateGenre :one
 UPDATE genres 
 SET 
-    name = COALESCE($2, fullname), 
+    name = COALESCE($2, name), 
     image_url = COALESCE($3, image_url)
 WHERE id = $1
 RETURNING id, name, image_url

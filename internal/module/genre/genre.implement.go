@@ -48,7 +48,9 @@ func (g *GenreService) GetGenreById(ctx context.Context, id int64) (*db.Genre, e
 func (g *GenreService) GetListGenres(ctx context.Context, page int32, pageSize int32) ([]db.Genre, int64) {
 	list, _ := g.q.GetListGenre(ctx, db.GetListGenreParams{Limit: pageSize, Offset: (page - 1) * pageSize})
 	count, _ := g.q.CountGenre(ctx)
-
+	if list == nil {
+		return []db.Genre{}, count
+	}
 	return list, count
 }
 
@@ -60,7 +62,7 @@ func (g *GenreService) UpdateGenre(ctx context.Context, id int64, name string, i
 		ImageUrl: image_url,
 	})
 	if err != nil {
-		return &db.Genre{}, nil
+		return &db.Genre{}, err
 	}
 	return &update, err
 }

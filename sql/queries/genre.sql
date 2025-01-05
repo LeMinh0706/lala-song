@@ -22,7 +22,7 @@ SELECT count(id) FROM genres;
 -- name: UpdateGenre :one
 UPDATE genres 
 SET 
-    name = COALESCE($2, fullname), 
+    name = COALESCE($2, name), 
     image_url = COALESCE($3, image_url)
 WHERE id = $1
 RETURNING *;
