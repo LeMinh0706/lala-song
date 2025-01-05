@@ -62,7 +62,7 @@ CREATE TABLE "song_genre" (
 
 CREATE TABLE "genres" (
   "id" bigserial PRIMARY KEY,
-  "name" varchar,
+  "name" varchar NOT NULL,
   "image_url" varchar NOT NULL
 );
 

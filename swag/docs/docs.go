@@ -23,6 +23,56 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/genres": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Genre",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Create Genre",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image genre",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.Genre"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/singers": {
             "get": {
                 "description": "Get list singers with page and page size (Limit-Offset)",
@@ -94,7 +144,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "file",
-                        "description": "Image comment",
+                        "description": "Image singer",
                         "name": "image",
                         "in": "formData",
                         "required": true
@@ -123,7 +173,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get singer with id",
+                "description": "Delete singer with id",
                 "consumes": [
                     "application/json"
                 ],
@@ -133,7 +183,7 @@ const docTemplate = `{
                 "tags": [
                     "Singers"
                 ],
-                "summary": "Get singer with id",
+                "summary": "Delete singer with id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -357,6 +407,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "db.Genre": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "db.GetListSingerRow": {
             "type": "object",
             "properties": {

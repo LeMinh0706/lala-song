@@ -1,5 +1,14 @@
 basePath: /api
 definitions:
+  db.Genre:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+    type: object
   db.GetListSingerRow:
     properties:
       fullname:
@@ -106,6 +115,38 @@ info:
   title: Fiber Example API
   version: "1.0"
 paths:
+  /genres:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Genre
+      parameters:
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Image genre
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/db.Genre'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create Genre
+      tags:
+      - Genres
   /singers:
     get:
       consumes:
@@ -146,7 +187,7 @@ paths:
         name: fullname
         required: true
         type: string
-      - description: Image comment
+      - description: Image singer
         in: formData
         name: image
         required: true
@@ -230,7 +271,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Get singer with id
+      description: Delete singer with id
       parameters:
       - description: ID
         in: path
@@ -248,7 +289,7 @@ paths:
             $ref: '#/definitions/res.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Get singer with id
+      summary: Delete singer with id
       tags:
       - Singers
   /users/login:

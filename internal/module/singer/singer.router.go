@@ -7,7 +7,7 @@ import (
 )
 
 func NewSingerRouter(f fiber.Router, service ISingerService, token token.Maker) {
-	sc := NewSingerController(service, token)
+	sc := NewSingerController(service)
 	singerGroup := f.Group("/singers")
 	{
 		singerGroup.Get("/:id", sc.GetSingerById)

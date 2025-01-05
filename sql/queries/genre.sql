@@ -29,3 +29,6 @@ RETURNING *;
 
 -- name: DeleteGenre :exec
 DELETE FROM genres WHERE id = $1;
+
+-- name: DeleteGenreSong :exec
+DELETE FROM song_genre WHERE genres_id = $1;

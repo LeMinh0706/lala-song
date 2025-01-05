@@ -5,7 +5,6 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,9 +25,9 @@ type Favorite struct {
 }
 
 type Genre struct {
-	ID       int64          `json:"id"`
-	Name     sql.NullString `json:"name"`
-	ImageUrl string         `json:"image_url"`
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	ImageUrl string `json:"image_url"`
 }
 
 type Role struct {

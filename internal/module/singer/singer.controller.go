@@ -9,20 +9,17 @@ import (
 
 	"github.com/LeMinh0706/lala-song/internal/handler"
 	"github.com/LeMinh0706/lala-song/res"
-	"github.com/LeMinh0706/lala-song/token"
 	"github.com/LeMinh0706/lala-song/util"
 	"github.com/gofiber/fiber/v2"
 )
 
 type SingerController struct {
 	service ISingerService
-	token   token.Maker
 }
 
-func NewSingerController(service ISingerService, token token.Maker) *SingerController {
+func NewSingerController(service ISingerService) *SingerController {
 	return &SingerController{
 		service: service,
-		token:   token,
 	}
 }
 
@@ -33,7 +30,7 @@ func NewSingerController(service ISingerService, token token.Maker) *SingerContr
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        fullname formData string true "fullname"
-// @Param        image formData file true "Image comment"
+// @Param        image formData file true "Image singer"
 // @Security BearerAuth
 // @Success      201  {object} 	db.Singer
 // @Failure      500  {object}  res.ErrSwaggerJson
@@ -182,8 +179,8 @@ func (s *SingerController) UpdateSinger(f *fiber.Ctx) error {
 }
 
 // Singer godoc
-// @Summary      Get singer with id
-// @Description  Get singer with id
+// @Summary      Delete singer with id
+// @Description  Delete singer with id
 // @Tags         Singers
 // @Accept       json
 // @Produce      json

@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const countGenre = `-- name: CountGenre :one
@@ -31,8 +30,8 @@ INSERT INTO genres (
 `
 
 type CreateGenreParams struct {
-	Name     sql.NullString `json:"name"`
-	ImageUrl string         `json:"image_url"`
+	Name     string `json:"name"`
+	ImageUrl string `json:"image_url"`
 }
 
 func (q *Queries) CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error) {
@@ -48,6 +47,15 @@ DELETE FROM genres WHERE id = $1
 
 func (q *Queries) DeleteGenre(ctx context.Context, id int64) error {
 	_, err := q.db.ExecContext(ctx, deleteGenre, id)
+	return err
+}
+
+const deleteGenreSong = `-- name: DeleteGenreSong :exec
+DELETE FROM song_genre WHERE genres_id = $1
+`
+
+func (q *Queries) DeleteGenreSong(ctx context.Context, genresID int64) error {
+	_, err := q.db.ExecContext(ctx, deleteGenreSong, genresID)
 	return err
 }
 
@@ -108,9 +116,9 @@ RETURNING id, name, image_url
 `
 
 type UpdateGenreParams struct {
-	ID       int64          `json:"id"`
-	Name     sql.NullString `json:"name"`
-	ImageUrl string         `json:"image_url"`
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	ImageUrl string `json:"image_url"`
 }
 
 func (q *Queries) UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error) {
