@@ -108,7 +108,7 @@ func (a *AlbumService) GetSingerAlbum(ctx context.Context, singer_id int64, page
 	})
 	total, _ := a.q.CountSingerAlbum(ctx, singer_id)
 
-	if list == nil {
+	if len(list) == 0 {
 		return []db.GetAlbumRow{}, total, nil
 	}
 
