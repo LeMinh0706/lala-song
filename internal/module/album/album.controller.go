@@ -105,12 +105,12 @@ func (a *AlbumController) GetAlbums(f *fiber.Ctx) error {
 		return res.ErrorResponse(f, res.ErrBadRequestId)
 	}
 
-	album, count, err := a.service.GetSingerAlbum(f.Context(), singer_id, page, pageSize)
+	album, _, err := a.service.GetSingerAlbum(f.Context(), singer_id, page, pageSize)
 	if err != nil {
 		return res.ErrorResponse(f, res.ErrSingerNotfound)
 	}
 
-	return res.SuccessResponse(f, 200, GetAlbumResponse{Album: album, Total: count})
+	return res.SuccessResponse(f, 200, album)
 }
 
 // Album godoc
