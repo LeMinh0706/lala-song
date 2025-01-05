@@ -13,6 +13,24 @@ var AllowType = map[string]bool{
 	".gif":  true,
 }
 
+var AllowMp3 = map[string]bool{
+	".mp3": true,
+}
+
+var AllowTxt = map[string]bool{
+	".txt": true,
+}
+
+func Mp3Check(mp3 string) bool {
+	ext := strings.ToLower(filepath.Ext(mp3))
+	return AllowMp3[ext]
+}
+
+func LyricCheck(lyric string) bool {
+	ext := strings.ToLower(filepath.Ext(lyric))
+	return AllowTxt[ext]
+}
+
 func FileExtCheck(image string) bool {
 	ext := strings.ToLower(filepath.Ext(image))
 

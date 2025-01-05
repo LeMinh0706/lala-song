@@ -1,3 +1,19 @@
 package song
 
-func NewSongRouter(){}
+import (
+	"github.com/LeMinh0706/lala-song/internal/middlewares"
+	"github.com/LeMinh0706/lala-song/token"
+	"github.com/gofiber/fiber/v2"
+)
+
+func NewSongRouter(f fiber.Router, service ISongService, token token.Maker) {
+	sc := NewSongController(service)
+	songGroup := f.Group("/songs")
+	{
+
+	}
+	auth := songGroup.Group("").Use(middlewares.AuthorizeAdminMiddleware(token))
+	{
+		auth.Post("", sc.CreateSong)
+	}
+}
