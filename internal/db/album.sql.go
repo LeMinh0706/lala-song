@@ -95,7 +95,8 @@ const getAlbum = `-- name: GetAlbum :one
 SELECT a.id, a.name, a.image_url, a.singer_id, s.fullname 
 FROM album as a 
 JOIN singers as s ON a.singer_id = s.id  
-WHERE a.id = $1 AND is_deleted != TRUE
+WHERE a.id = $1 AND a.is_deleted != TRUE
+LIMIT 1
 `
 
 type GetAlbumRow struct {

@@ -73,7 +73,6 @@ func (a *AlbumService) GetAlbumById(ctx context.Context, id int64) (*db.GetAlbum
 
 // GetListAlbum implements IAlbumService.
 func (a *AlbumService) GetListAlbum(ctx context.Context, page int32, pageSize int32) ([]db.GetAlbumRow, int64) {
-	var albums []db.GetAlbumRow
 	list, _ := a.q.GetListAlbum(ctx, db.GetListAlbumParams{
 		Limit:  pageSize,
 		Offset: (page - 1) * pageSize,
@@ -81,9 +80,11 @@ func (a *AlbumService) GetListAlbum(ctx context.Context, page int32, pageSize in
 
 	count, _ := a.q.CountAlbum(ctx)
 
-	if list == nil {
+	if len(list) == 0 {
 		return []db.GetAlbumRow{}, count
 	}
+
+	var albums []db.GetAlbumRow
 
 	for _, element := range list {
 		album, _ := a.q.GetAlbum(ctx, element)
