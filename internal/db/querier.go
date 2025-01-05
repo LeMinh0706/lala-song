@@ -9,20 +9,37 @@ import (
 )
 
 type Querier interface {
+	CountAlbum(ctx context.Context) (int64, error)
 	CountGenre(ctx context.Context) (int64, error)
 	CountSinger(ctx context.Context) (int64, error)
+	CountSingerAlbum(ctx context.Context, singerID int64) (int64, error)
+	// CREATE TABLE "album" (
+	//   "id" bigserial PRIMARY KEY,
+	//   "name" varchar NOT NULL,
+	//   "image_url" varchar NOT NULL,
+	//   "is_deleted" bool NOT NULL DEFAULT false,
+	//   "singer_id" bigint NOT NULL,
+	//   "created_at" timestamptz NOT NULL DEFAULT (now())
+	// );
+	CreateAlbum(ctx context.Context, arg CreateAlbumParams) (CreateAlbumRow, error)
 	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
+	DeleteAlbum(ctx context.Context, id int64) error
 	DeleteGenre(ctx context.Context, id int64) error
 	DeleteGenreSong(ctx context.Context, genresID int64) error
 	DeleteSinger(ctx context.Context, id int64) error
+	// SELECT u.*, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1;
+	GetAlbum(ctx context.Context, id int64) (GetAlbumRow, error)
 	GetGenre(ctx context.Context, id int64) (Genre, error)
+	GetListAlbum(ctx context.Context, arg GetListAlbumParams) ([]int64, error)
 	GetListGenre(ctx context.Context, arg GetListGenreParams) ([]Genre, error)
 	GetListSinger(ctx context.Context, arg GetListSingerParams) ([]GetListSingerRow, error)
 	GetMe(ctx context.Context, username string) (GetMeRow, error)
 	GetSinger(ctx context.Context, id int64) (GetSingerRow, error)
+	GetSingerAlbums(ctx context.Context, arg GetSingerAlbumsParams) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
+	UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (UpdateAlbumRow, error)
 	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
 	UpdateSinger(ctx context.Context, arg UpdateSingerParams) (UpdateSingerRow, error)
 }

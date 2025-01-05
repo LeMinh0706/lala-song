@@ -15,6 +15,7 @@ const (
 	ErrBadRequestMime     = 40003
 	ErrBadRequestId       = 40004
 	ErrAddSinger          = 40005
+	ErrAddAlbum           = 40018
 	ErrImageSize          = 40006
 	ErrGender             = 40007
 	ErrAddGenre           = 40017
@@ -62,6 +63,7 @@ const (
 	ErrBadRequestQuery    = 40023
 	ErrSingerNotfound     = 40423
 	ErrGenreNotFound      = 40424
+	ErrAlbumNotFound      = 40426
 	ErrUsernameSpace      = 40030
 	ErrForbidden          = 40301
 )
@@ -128,6 +130,8 @@ var msg = map[int]string{
 	ErrSingerNotfound:     "Không tìm thấy nghệ sĩ",
 	ErrGenreNotFound:      "Dòng nhạc này hiện chưa có",
 	ErrForbidden:          "Chưa đủ có quyền thực hiện",
+	ErrAddAlbum:           "Thêm Album thất bại",
+	ErrAlbumNotFound:      "Album không tồn tại",
 }
 
 // ErrOutOfDate:   "Token is out of date",
