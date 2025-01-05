@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/LeMinh0706/lala-song/internal/initialize"
+	"github.com/LeMinh0706/lala-song/internal/module/genre"
 	"github.com/LeMinh0706/lala-song/internal/module/singer"
 	"github.com/LeMinh0706/lala-song/internal/module/user"
 	_ "github.com/LeMinh0706/lala-song/swag/docs"
@@ -17,5 +18,6 @@ func (s *Server) NewRouter() {
 	{
 		user.NewUserRouter(a, initService.UserService, s.TokenMaker)
 		singer.NewSingerRouter(a, initService.SingerService, s.TokenMaker)
+		genre.NewGenreRouter(a, initService.GenreService, s.TokenMaker)
 	}
 }

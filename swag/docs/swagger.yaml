@@ -1,5 +1,14 @@
 basePath: /api
 definitions:
+  db.Genre:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+    type: object
   db.GetListSingerRow:
     properties:
       fullname:
@@ -39,6 +48,15 @@ definitions:
         type: string
       is_deleted:
         type: boolean
+    type: object
+  genre.GenresResponse:
+    properties:
+      genres:
+        items:
+          $ref: '#/definitions/db.Genre'
+        type: array
+      total:
+        type: integer
     type: object
   res.ErrSwaggerJson:
     properties:
@@ -106,6 +124,150 @@ info:
   title: Fiber Example API
   version: "1.0"
 paths:
+  /genres:
+    get:
+      consumes:
+      - application/json
+      description: Get list genres with page and page size (Limit-Offset)
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/genre.GenresResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get list genres
+      tags:
+      - Genres
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Genre
+      parameters:
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Image genre
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/db.Genre'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create Genre
+      tags:
+      - Genres
+  /genres/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete genre with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete genre with id
+      tags:
+      - Genres
+    get:
+      consumes:
+      - application/json
+      description: Get genre with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Genre'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get genre with id
+      tags:
+      - Genres
+    put:
+      consumes:
+      - application/json
+      description: Update genre
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: name
+        in: formData
+        name: name
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Genre'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update genre
+      tags:
+      - Genres
   /singers:
     get:
       consumes:
@@ -146,7 +308,7 @@ paths:
         name: fullname
         required: true
         type: string
-      - description: Image comment
+      - description: Image singer
         in: formData
         name: image
         required: true
@@ -230,7 +392,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Get singer with id
+      description: Delete singer with id
       parameters:
       - description: ID
         in: path
@@ -248,7 +410,7 @@ paths:
             $ref: '#/definitions/res.ErrSwaggerJson'
       security:
       - BearerAuth: []
-      summary: Get singer with id
+      summary: Delete singer with id
       tags:
       - Singers
   /users/login:

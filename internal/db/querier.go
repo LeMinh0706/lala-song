@@ -14,6 +14,7 @@ type Querier interface {
 	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
 	DeleteGenre(ctx context.Context, id int64) error
+	DeleteGenreSong(ctx context.Context, genresID int64) error
 	DeleteSinger(ctx context.Context, id int64) error
 	GetGenre(ctx context.Context, id int64) (Genre, error)
 	GetListGenre(ctx context.Context, arg GetListGenreParams) ([]Genre, error)

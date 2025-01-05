@@ -22,10 +22,13 @@ SELECT count(id) FROM genres;
 -- name: UpdateGenre :one
 UPDATE genres 
 SET 
-    name = COALESCE($2, fullname), 
+    name = COALESCE($2, name), 
     image_url = COALESCE($3, image_url)
 WHERE id = $1
 RETURNING *;
 
 -- name: DeleteGenre :exec
 DELETE FROM genres WHERE id = $1;
+
+-- name: DeleteGenreSong :exec
+DELETE FROM song_genre WHERE genres_id = $1;

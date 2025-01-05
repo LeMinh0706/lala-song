@@ -17,7 +17,7 @@ const (
 	ErrAddSinger          = 40005
 	ErrImageSize          = 40006
 	ErrGender             = 40007
-	ErrDistance           = 40017
+	ErrAddGenre           = 40017
 	ErrUnauthorize        = 40101
 	ErrInvalid            = 40102
 	ErrYourSelf           = 40103
@@ -61,6 +61,7 @@ const (
 	CantDelete            = 40425
 	ErrBadRequestQuery    = 40023
 	ErrSingerNotfound     = 40423
+	ErrGenreNotFound      = 40424
 	ErrUsernameSpace      = 40030
 	ErrForbidden          = 40301
 )
@@ -119,12 +120,13 @@ var msg = map[int]string{
 	YouHaveRequest:        "You requested a few minutes ago, please wait",
 	PasswordHaveChange:    "You have changed password before",
 	ResetPasswordTimeOut:  "You're to late, try request forgot-password again",
-	ErrDistance:           "Distance must be number",
+	ErrAddGenre:           "Không thể thêm dòng nhạc này",
 	CantDelete:            "Notification not found",
 	ErrVerify:             "Please wait for approval",
 	ErrNotAdmin:           "Access denied",
 	ErrBadRequestId:       "Không tìm thấy nội dung",
 	ErrSingerNotfound:     "Không tìm thấy nghệ sĩ",
+	ErrGenreNotFound:      "Dòng nhạc này hiện chưa có",
 	ErrForbidden:          "Chưa đủ có quyền thực hiện",
 }
 

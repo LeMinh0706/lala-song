@@ -23,6 +23,228 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/genres": {
+            "get": {
+                "description": "Get list genres with page and page size (Limit-Offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Get list genres",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/genre.GenresResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Genre",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Create Genre",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image genre",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.Genre"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/genres/{id}": {
+            "get": {
+                "description": "Get genre with id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Get genre with id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.Genre"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update genre",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Update genre",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image comment",
+                        "name": "image",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.Genre"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete genre with id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Delete genre with id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/singers": {
             "get": {
                 "description": "Get list singers with page and page size (Limit-Offset)",
@@ -94,7 +316,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "file",
-                        "description": "Image comment",
+                        "description": "Image singer",
                         "name": "image",
                         "in": "formData",
                         "required": true
@@ -123,7 +345,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get singer with id",
+                "description": "Delete singer with id",
                 "consumes": [
                     "application/json"
                 ],
@@ -133,7 +355,7 @@ const docTemplate = `{
                 "tags": [
                     "Singers"
                 ],
-                "summary": "Get singer with id",
+                "summary": "Delete singer with id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -357,6 +579,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "db.Genre": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "db.GetListSingerRow": {
             "type": "object",
             "properties": {
@@ -416,6 +652,20 @@ const docTemplate = `{
                 },
                 "is_deleted": {
                     "type": "boolean"
+                }
+            }
+        },
+        "genre.GenresResponse": {
+            "type": "object",
+            "properties": {
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.Genre"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },
