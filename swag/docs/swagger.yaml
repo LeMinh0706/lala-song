@@ -1,5 +1,20 @@
 basePath: /api
 definitions:
+  db.Album:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_deleted:
+        type: boolean
+      name:
+        type: string
+      singer_id:
+        type: integer
+    type: object
   db.Genre:
     properties:
       id:
@@ -124,6 +139,43 @@ info:
   title: Fiber Example API
   version: "1.0"
 paths:
+  /albums:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create Album
+      parameters:
+      - description: Singer Id
+        in: formData
+        name: singer_id
+        required: true
+        type: integer
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Image genre
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/db.Album'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create Album
+      tags:
+      - Albums
   /genres:
     get:
       consumes:

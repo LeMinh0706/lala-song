@@ -23,6 +23,63 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/albums": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Album",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Create Album",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Singer Id",
+                        "name": "singer_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Image genre",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.Album"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/genres": {
             "get": {
                 "description": "Get list genres with page and page size (Limit-Offset)",
@@ -579,6 +636,29 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "db.Album": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "is_deleted": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "singer_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.Genre": {
             "type": "object",
             "properties": {
