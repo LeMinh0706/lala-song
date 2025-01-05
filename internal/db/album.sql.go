@@ -20,6 +20,18 @@ func (q *Queries) CountAlbum(ctx context.Context) (int64, error) {
 	return count, err
 }
 
+const countSingerAlbum = `-- name: CountSingerAlbum :one
+SELECT count(id) FROM album
+WHERE singer_id = $1
+`
+
+func (q *Queries) CountSingerAlbum(ctx context.Context, singerID int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countSingerAlbum, singerID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createAlbum = `-- name: CreateAlbum :one
 
 INSERT INTO album (
@@ -71,7 +83,6 @@ UPDATE album
 SET 
     is_deleted = TRUE
 WHERE id = $1
-RETURNING id, name, image_url, is_deleted, singer_id, created_at
 `
 
 func (q *Queries) DeleteAlbum(ctx context.Context, id int64) error {
@@ -111,6 +122,7 @@ func (q *Queries) GetAlbum(ctx context.Context, id int64) (GetAlbumRow, error) {
 
 const getListAlbum = `-- name: GetListAlbum :many
 SELECT id FROM album
+WHERE is_deleted != TRUE
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2
@@ -146,19 +158,20 @@ func (q *Queries) GetListAlbum(ctx context.Context, arg GetListAlbumParams) ([]i
 
 const getSingerAlbums = `-- name: GetSingerAlbums :many
 SELECT id FROM album
-WHERE singer_id = $1
+WHERE singer_id = $1 AND is_deleted != TRUE
 ORDER BY id DESC
-LIMIT $1
-OFFSET $2
+LIMIT $2
+OFFSET $3
 `
 
 type GetSingerAlbumsParams struct {
-	Limit  int32 `json:"limit"`
-	Offset int32 `json:"offset"`
+	SingerID int64 `json:"singer_id"`
+	Limit    int32 `json:"limit"`
+	Offset   int32 `json:"offset"`
 }
 
 func (q *Queries) GetSingerAlbums(ctx context.Context, arg GetSingerAlbumsParams) ([]int64, error) {
-	rows, err := q.db.QueryContext(ctx, getSingerAlbums, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, getSingerAlbums, arg.SingerID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +199,7 @@ SET
     name = COALESCE($2, name), 
     image_url = COALESCE($3, image_url)
 WHERE id = $1
-RETURNING id, name, image_url, is_deleted, singer_id, created_at
+RETURNING id, name, image_url, singer_id
 `
 
 type UpdateAlbumParams struct {
@@ -195,16 +208,21 @@ type UpdateAlbumParams struct {
 	ImageUrl string `json:"image_url"`
 }
 
-func (q *Queries) UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (Album, error) {
+type UpdateAlbumRow struct {
+	ID       int64  `json:"id"`
+	Name     string `json:"name"`
+	ImageUrl string `json:"image_url"`
+	SingerID int64  `json:"singer_id"`
+}
+
+func (q *Queries) UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (UpdateAlbumRow, error) {
 	row := q.db.QueryRowContext(ctx, updateAlbum, arg.ID, arg.Name, arg.ImageUrl)
-	var i Album
+	var i UpdateAlbumRow
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.ImageUrl,
-		&i.IsDeleted,
 		&i.SingerID,
-		&i.CreatedAt,
 	)
 	return i, err
 }

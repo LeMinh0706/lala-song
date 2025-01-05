@@ -63,6 +63,7 @@ const (
 	ErrBadRequestQuery    = 40023
 	ErrSingerNotfound     = 40423
 	ErrGenreNotFound      = 40424
+	ErrAlbumNotFound      = 40426
 	ErrUsernameSpace      = 40030
 	ErrForbidden          = 40301
 )
@@ -130,6 +131,7 @@ var msg = map[int]string{
 	ErrGenreNotFound:      "Dòng nhạc này hiện chưa có",
 	ErrForbidden:          "Chưa đủ có quyền thực hiện",
 	ErrAddAlbum:           "Thêm Album thất bại",
+	ErrAlbumNotFound:      "Album không tồn tại",
 }
 
 // ErrOutOfDate:   "Token is out of date",

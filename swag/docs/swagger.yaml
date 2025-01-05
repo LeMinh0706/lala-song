@@ -1,15 +1,20 @@
 basePath: /api
 definitions:
-  db.Album:
+  album.GetAlbumResponse:
     properties:
-      created_at:
-        type: string
+      album:
+        items:
+          $ref: '#/definitions/db.GetAlbumRow'
+        type: array
+      total:
+        type: integer
+    type: object
+  db.CreateAlbumRow:
+    properties:
       id:
         type: integer
       image_url:
         type: string
-      is_deleted:
-        type: boolean
       name:
         type: string
       singer_id:
@@ -23,6 +28,19 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  db.GetAlbumRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      singer_id:
+        type: integer
     type: object
   db.GetListSingerRow:
     properties:
@@ -139,7 +157,65 @@ info:
   title: Fiber Example API
   version: "1.0"
 paths:
+  /album/soft/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Delete album with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete album with id
+      tags:
+      - Albums
   /albums:
+    get:
+      consumes:
+      - application/json
+      description: Get list albums with page and page size (Limit-Offset)
+      parameters:
+      - description: Singer ID
+        in: query
+        name: singer_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/album.GetAlbumResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get list albums
+      tags:
+      - Albums
     post:
       consumes:
       - multipart/form-data
@@ -166,7 +242,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/db.Album'
+            $ref: '#/definitions/db.CreateAlbumRow'
         "500":
           description: Internal Server Error
           schema:
@@ -174,6 +250,41 @@ paths:
       security:
       - BearerAuth: []
       summary: Create Album
+      tags:
+      - Albums
+  /albums/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update album
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: name
+        in: formData
+        name: name
+        type: string
+      - description: Image comment
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.CreateAlbumRow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Update album
       tags:
       - Albums
   /genres:

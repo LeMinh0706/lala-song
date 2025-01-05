@@ -12,6 +12,7 @@ type Querier interface {
 	CountAlbum(ctx context.Context) (int64, error)
 	CountGenre(ctx context.Context) (int64, error)
 	CountSinger(ctx context.Context) (int64, error)
+	CountSingerAlbum(ctx context.Context, singerID int64) (int64, error)
 	// CREATE TABLE "album" (
 	//   "id" bigserial PRIMARY KEY,
 	//   "name" varchar NOT NULL,
@@ -38,7 +39,7 @@ type Querier interface {
 	GetSingerAlbums(ctx context.Context, arg GetSingerAlbumsParams) ([]int64, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
-	UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (Album, error)
+	UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (UpdateAlbumRow, error)
 	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
 	UpdateSinger(ctx context.Context, arg UpdateSingerParams) (UpdateSingerRow, error)
 }

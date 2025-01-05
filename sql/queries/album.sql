@@ -26,19 +26,24 @@ WHERE a.id = $1;
 
 -- name: GetListAlbum :many
 SELECT id FROM album
+WHERE is_deleted != TRUE
 ORDER BY id DESC
 LIMIT $1
 OFFSET $2;
 
 -- name: GetSingerAlbums :many
 SELECT id FROM album
-WHERE singer_id = $1
+WHERE singer_id = $1 AND is_deleted != TRUE
 ORDER BY id DESC
-LIMIT $1
-OFFSET $2;
+LIMIT $2
+OFFSET $3;
 
 -- name: CountAlbum :one
 SELECT count(id) FROM album;
+
+-- name: CountSingerAlbum :one
+SELECT count(id) FROM album
+WHERE singer_id = $1;
 
 -- name: UpdateAlbum :one
 UPDATE album 
@@ -46,11 +51,10 @@ SET
     name = COALESCE($2, name), 
     image_url = COALESCE($3, image_url)
 WHERE id = $1
-RETURNING *;
+RETURNING id, name, image_url, singer_id;
 
 -- name: DeleteAlbum :exec
 UPDATE album
 SET 
     is_deleted = TRUE
-WHERE id = $1
-RETURNING *;
+WHERE id = $1;
