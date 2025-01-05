@@ -670,6 +670,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/songs": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create song",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Create song",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "album id",
+                        "name": "album_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Mp3 file",
+                        "name": "mp3",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Lyric file",
+                        "name": "lyric",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.CreateSongRow"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Login to be more handsome",
@@ -808,6 +872,29 @@ const docTemplate = `{
                 },
                 "singer_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "db.CreateSongRow": {
+            "type": "object",
+            "properties": {
+                "album_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lyric_file": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "song_file": {
+                    "type": "string"
                 }
             }
         },

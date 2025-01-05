@@ -20,6 +20,21 @@ definitions:
       singer_id:
         type: integer
     type: object
+  db.CreateSongRow:
+    properties:
+      album_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      lyric_file:
+        type: string
+      name:
+        type: string
+      song_file:
+        type: string
+    type: object
   db.Genre:
     properties:
       id:
@@ -576,6 +591,48 @@ paths:
       summary: Delete singer with id
       tags:
       - Singers
+  /songs:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create song
+      parameters:
+      - description: name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: album id
+        in: formData
+        name: album_id
+        required: true
+        type: integer
+      - description: Mp3 file
+        in: formData
+        name: mp3
+        required: true
+        type: file
+      - description: Lyric file
+        in: formData
+        name: lyric
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/db.CreateSongRow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Create song
+      tags:
+      - Songs
   /users/login:
     post:
       consumes:

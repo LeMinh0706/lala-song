@@ -6,6 +6,8 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
@@ -24,19 +26,37 @@ type Querier interface {
 	CreateAlbum(ctx context.Context, arg CreateAlbumParams) (CreateAlbumRow, error)
 	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
+	// CREATE TABLE "songs" (
+	//   "id" uuid PRIMARY KEY,
+	//   "name" varchar NOT NULL,
+	//   "song_file" varchar NOT NULL,
+	//   "lyric_file" varchar NOT NULL,
+	//   "is_deleted" bool NOT NULL DEFAULT false,
+	//   "album_id" bigint NOT NULL,
+	//   "created_at" timestamptz NOT NULL DEFAULT (now())
+	// );
+	CreateSong(ctx context.Context, arg CreateSongParams) (CreateSongRow, error)
 	DeleteAlbum(ctx context.Context, id int64) error
 	DeleteGenre(ctx context.Context, id int64) error
 	DeleteGenreSong(ctx context.Context, genresID int64) error
 	DeleteSinger(ctx context.Context, id int64) error
+	DeleteSong(ctx context.Context, id uuid.UUID) error
 	// SELECT u.*, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1;
 	GetAlbum(ctx context.Context, id int64) (GetAlbumRow, error)
+	GetAlbumSongs(ctx context.Context, arg GetAlbumSongsParams) ([]uuid.UUID, error)
 	GetGenre(ctx context.Context, id int64) (Genre, error)
+	GetGenreSongs(ctx context.Context, arg GetGenreSongsParams) ([]uuid.UUID, error)
+	GetGenresWithSong(ctx context.Context, arg GetGenresWithSongParams) ([]Genre, error)
 	GetListAlbum(ctx context.Context, arg GetListAlbumParams) ([]int64, error)
 	GetListGenre(ctx context.Context, arg GetListGenreParams) ([]Genre, error)
 	GetListSinger(ctx context.Context, arg GetListSingerParams) ([]GetListSingerRow, error)
+	GetListSong(ctx context.Context, arg GetListSongParams) ([]uuid.UUID, error)
 	GetMe(ctx context.Context, username string) (GetMeRow, error)
 	GetSinger(ctx context.Context, id int64) (GetSingerRow, error)
 	GetSingerAlbums(ctx context.Context, arg GetSingerAlbumsParams) ([]int64, error)
+	GetSingerSongs(ctx context.Context, arg GetSingerSongsParams) ([]uuid.UUID, error)
+	GetSingersWithSong(ctx context.Context, arg GetSingersWithSongParams) ([]GetSingersWithSongRow, error)
+	GetSong(ctx context.Context, id uuid.UUID) (GetSongRow, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
 	UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (UpdateAlbumRow, error)

@@ -5,6 +5,7 @@ import (
 	"github.com/LeMinh0706/lala-song/internal/module/album"
 	"github.com/LeMinh0706/lala-song/internal/module/genre"
 	"github.com/LeMinh0706/lala-song/internal/module/singer"
+	"github.com/LeMinh0706/lala-song/internal/module/song"
 	"github.com/LeMinh0706/lala-song/internal/module/user"
 	_ "github.com/LeMinh0706/lala-song/swag/docs"
 	"github.com/gofiber/swagger"
@@ -21,6 +22,7 @@ func (s *Server) NewRouter() {
 		singer.NewSingerRouter(a, initService.SingerService, s.TokenMaker)
 		genre.NewGenreRouter(a, initService.GenreService, s.TokenMaker)
 		album.NewAlbumRouter(a, initService.AlbumService, s.TokenMaker)
+		song.NewSongRouter(a, initService.SongService, s.TokenMaker)
 	}
 
 }
