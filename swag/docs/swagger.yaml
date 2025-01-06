@@ -9,6 +9,20 @@ definitions:
       total:
         type: integer
     type: object
+  db.AddSongGenreParams:
+    properties:
+      genres_id:
+        type: integer
+      song_id:
+        type: string
+    type: object
+  db.AddSongSingerParams:
+    properties:
+      singer_id:
+        type: integer
+      song_id:
+        type: string
+    type: object
   db.CreateAlbumRow:
     properties:
       id:
@@ -86,6 +100,32 @@ definitions:
       image_url:
         type: string
     type: object
+  db.GetSingersWithSongRow:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+    type: object
+  db.GetSongRow:
+    properties:
+      album_id:
+        type: integer
+      id:
+        type: string
+      image_url:
+        type: string
+      lyric_file:
+        type: string
+      name:
+        type: string
+      name_2:
+        type: string
+      song_file:
+        type: string
+    type: object
   db.Singer:
     properties:
       fullname:
@@ -122,6 +162,19 @@ definitions:
         type: array
       total:
         type: integer
+    type: object
+  song.SongResponse:
+    properties:
+      genres:
+        items:
+          $ref: '#/definitions/db.Genre'
+        type: array
+      singers:
+        items:
+          $ref: '#/definitions/db.GetSingersWithSongRow'
+        type: array
+      song:
+        $ref: '#/definitions/db.GetSongRow'
     type: object
   user.Login:
     properties:
@@ -631,6 +684,87 @@ paths:
       security:
       - BearerAuth: []
       summary: Create song
+      tags:
+      - Songs
+  /songs/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get song with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/song.SongResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get song with id
+      tags:
+      - Songs
+  /songs/feature:
+    post:
+      consumes:
+      - application/json
+      description: Thêm nghệ sĩ khác vào bài hát
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/db.AddSongSingerParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/song.SongResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Thêm nghệ sĩ khác vào bài hát
+      tags:
+      - Songs
+  /songs/genre:
+    post:
+      consumes:
+      - application/json
+      description: Thêm thể loại nhạc cho bài hát khác vào bài hát
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/db.AddSongGenreParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/song.SongResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Thêm thể loại nhạc cho bài hát khác vào bài hát
       tags:
       - Songs
   /users/login:

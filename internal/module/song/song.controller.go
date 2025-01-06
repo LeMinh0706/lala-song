@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/LeMinh0706/lala-song/internal/db"
 	"github.com/LeMinh0706/lala-song/res"
 	"github.com/LeMinh0706/lala-song/util"
 	"github.com/gofiber/fiber/v2"
@@ -90,5 +91,84 @@ func (s *SongController) CreateSong(f *fiber.Ctx) error {
 		return res.ErrorNonKnow(f, err.Error())
 	}
 	return res.SuccessResponse(f, 201, song)
+}
 
+// song godoc
+// @Summary      Get song with id
+// @Description  Get song with id
+// @Tags         Songs
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "ID"
+// @Success      200  {object}  SongResponse
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /songs/{id} [get]
+func (s *SongController) GetSongById(f *fiber.Ctx) error {
+	idStr := f.Params("id")
+
+	uuid, err := uuid.Parse(idStr)
+
+	if err != nil {
+		res.ErrorResponse(f, res.ErrBadRequestId)
+	}
+
+	genre, err := s.service.GetSong(f.Context(), uuid)
+	if err != nil {
+		return res.ErrorResponse(f, res.ErrGenreNotFound)
+	}
+	return res.SuccessResponse(f, 200, genre)
+}
+
+// song godoc
+// @Summary      Thêm nghệ sĩ khác vào bài hát
+// @Description  Thêm nghệ sĩ khác vào bài hát
+// @Tags         Songs
+// @Accept       json
+// @Produce      json
+// @Param        request body db.AddSongSingerParams true "request"
+// @Security BearerAuth
+// @Success      200  {object}  SongResponse
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /songs/feature [post]
+func (s *SongController) AddFeatureSong(f *fiber.Ctx) error {
+
+	var req db.AddSongSingerParams
+
+	if err := f.BodyParser(&req); err != nil {
+		return res.ErrorResponse(f, 40000)
+	}
+
+	feature, err := s.service.AddFeatureSong(f.Context(), req.SongID, req.SingerID)
+	if err != nil {
+		return res.ErrorResponse(f, res.ErrAddSingerSong)
+	}
+
+	return res.SuccessResponse(f, 200, feature)
+}
+
+// song godoc
+// @Summary      Thêm thể loại nhạc cho bài hát khác vào bài hát
+// @Description  Thêm thể loại nhạc cho bài hát khác vào bài hát
+// @Tags         Songs
+// @Accept       json
+// @Produce      json
+// @Param        request body db.AddSongGenreParams true "request"
+// @Security BearerAuth
+// @Success      200  {object}  SongResponse
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /songs/genre [post]
+func (s *SongController) AddGenre(f *fiber.Ctx) error {
+
+	var req db.AddSongGenreParams
+
+	if err := f.BodyParser(&req); err != nil {
+		return res.ErrorResponse(f, 40000)
+	}
+
+	feature, err := s.service.AddGenreSong(f.Context(), req.SongID, req.GenresID)
+	if err != nil {
+		return res.ErrorResponse(f, res.ErrAddGenreSong)
+	}
+
+	return res.SuccessResponse(f, 200, feature)
 }

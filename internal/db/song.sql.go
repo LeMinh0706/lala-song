@@ -12,6 +12,48 @@ import (
 	"github.com/google/uuid"
 )
 
+const addSongGenre = `-- name: AddSongGenre :one
+INSERT INTO song_genre (
+    genres_id,
+    song_id
+)VALUES(
+    $1, $2
+)RETURNING genres_id, song_id
+`
+
+type AddSongGenreParams struct {
+	GenresID int64     `json:"genres_id"`
+	SongID   uuid.UUID `json:"song_id"`
+}
+
+func (q *Queries) AddSongGenre(ctx context.Context, arg AddSongGenreParams) (SongGenre, error) {
+	row := q.db.QueryRowContext(ctx, addSongGenre, arg.GenresID, arg.SongID)
+	var i SongGenre
+	err := row.Scan(&i.GenresID, &i.SongID)
+	return i, err
+}
+
+const addSongSinger = `-- name: AddSongSinger :one
+INSERT INTO singer_song (
+    singer_id,
+    song_id
+)VALUES(
+    $1, $2
+)RETURNING song_id, singer_id
+`
+
+type AddSongSingerParams struct {
+	SingerID int64     `json:"singer_id"`
+	SongID   uuid.UUID `json:"song_id"`
+}
+
+func (q *Queries) AddSongSinger(ctx context.Context, arg AddSongSingerParams) (SingerSong, error) {
+	row := q.db.QueryRowContext(ctx, addSongSinger, arg.SingerID, arg.SongID)
+	var i SingerSong
+	err := row.Scan(&i.SongID, &i.SingerID)
+	return i, err
+}
+
 const createSong = `-- name: CreateSong :one
 
 INSERT INTO songs (
@@ -164,18 +206,10 @@ const getGenresWithSong = `-- name: GetGenresWithSong :many
 SELECT g.id, g.name, g.image_url FROM genres as g 
 JOIN song_genre as s ON g.id = s.genres_id
 WHERE s.song_id = $1
-LIMIT $2
-OFFSET $3
 `
 
-type GetGenresWithSongParams struct {
-	SongID uuid.UUID `json:"song_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
-}
-
-func (q *Queries) GetGenresWithSong(ctx context.Context, arg GetGenresWithSongParams) ([]Genre, error) {
-	rows, err := q.db.QueryContext(ctx, getGenresWithSong, arg.SongID, arg.Limit, arg.Offset)
+func (q *Queries) GetGenresWithSong(ctx context.Context, songID uuid.UUID) ([]Genre, error) {
+	rows, err := q.db.QueryContext(ctx, getGenresWithSong, songID)
 	if err != nil {
 		return nil, err
 	}
@@ -233,6 +267,18 @@ func (q *Queries) GetListSong(ctx context.Context, arg GetListSongParams) ([]uui
 	return items, nil
 }
 
+const getSingerAlbum = `-- name: GetSingerAlbum :one
+SELECT s.id FROM singers as s 
+JOIN album as a ON s.id = a.singer_id
+WHERE a.id = $1
+`
+
+func (q *Queries) GetSingerAlbum(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getSingerAlbum, id)
+	err := row.Scan(&id)
+	return id, err
+}
+
 const getSingerSongs = `-- name: GetSingerSongs :many
 SELECT id FROM songs as s 
 JOIN singer_song as i ON s.id = i.song_id 
@@ -275,15 +321,7 @@ const getSingersWithSong = `-- name: GetSingersWithSong :many
 SELECT s.id, s.fullname, s.image_url FROM singers as s 
 JOIN singer_song as i ON s.id = i.singer_id
 WHERE i.song_id = $1
-LIMIT $2
-OFFSET $3
 `
-
-type GetSingersWithSongParams struct {
-	SongID uuid.UUID `json:"song_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
-}
 
 type GetSingersWithSongRow struct {
 	ID       int64  `json:"id"`
@@ -291,8 +329,8 @@ type GetSingersWithSongRow struct {
 	ImageUrl string `json:"image_url"`
 }
 
-func (q *Queries) GetSingersWithSong(ctx context.Context, arg GetSingersWithSongParams) ([]GetSingersWithSongRow, error) {
-	rows, err := q.db.QueryContext(ctx, getSingersWithSong, arg.SongID, arg.Limit, arg.Offset)
+func (q *Queries) GetSingersWithSong(ctx context.Context, songID uuid.UUID) ([]GetSingersWithSongRow, error) {
+	rows, err := q.db.QueryContext(ctx, getSingersWithSong, songID)
 	if err != nil {
 		return nil, err
 	}
@@ -318,7 +356,7 @@ const getSong = `-- name: GetSong :one
 SELECT s.id, s.name, s.song_file, s.lyric_file, s.album_id, a.name, a.image_url 
 FROM songs as s
 JOIN album as a ON s.album_id = a.id
-WHERE s.id = $1
+WHERE s.id = $1 AND s.is_deleted IS NOT TRUE
 `
 
 type GetSongRow struct {

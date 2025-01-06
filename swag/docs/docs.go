@@ -734,6 +734,134 @@ const docTemplate = `{
                 }
             }
         },
+        "/songs/feature": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Thêm nghệ sĩ khác vào bài hát",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Thêm nghệ sĩ khác vào bài hát",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/db.AddSongSingerParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/song.SongResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/genre": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Thêm thể loại nhạc cho bài hát khác vào bài hát",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Thêm thể loại nhạc cho bài hát khác vào bài hát",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/db.AddSongGenreParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/song.SongResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/{id}": {
+            "get": {
+                "description": "Get song with id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Get song with id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/song.SongResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            }
+        },
         "/users/login": {
             "post": {
                 "description": "Login to be more handsome",
@@ -858,6 +986,28 @@ const docTemplate = `{
                 }
             }
         },
+        "db.AddSongGenreParams": {
+            "type": "object",
+            "properties": {
+                "genres_id": {
+                    "type": "integer"
+                },
+                "song_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.AddSongSingerParams": {
+            "type": "object",
+            "properties": {
+                "singer_id": {
+                    "type": "integer"
+                },
+                "song_id": {
+                    "type": "string"
+                }
+            }
+        },
         "db.CreateAlbumRow": {
             "type": "object",
             "properties": {
@@ -977,6 +1127,46 @@ const docTemplate = `{
                 }
             }
         },
+        "db.GetSingersWithSongRow": {
+            "type": "object",
+            "properties": {
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.GetSongRow": {
+            "type": "object",
+            "properties": {
+                "album_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "lyric_file": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "name_2": {
+                    "type": "string"
+                },
+                "song_file": {
+                    "type": "string"
+                }
+            }
+        },
         "db.Singer": {
             "type": "object",
             "properties": {
@@ -1031,6 +1221,26 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "song.SongResponse": {
+            "type": "object",
+            "properties": {
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.Genre"
+                    }
+                },
+                "singers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/db.GetSingersWithSongRow"
+                    }
+                },
+                "song": {
+                    "$ref": "#/definitions/db.GetSongRow"
                 }
             }
         },
