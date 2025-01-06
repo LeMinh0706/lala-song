@@ -84,7 +84,6 @@ INSERT INTO song_genre (
 )RETURNING *;
 
 
-
 -- name: AddSongSinger :one
 INSERT INTO singer_song (
     singer_id,

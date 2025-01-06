@@ -8,7 +8,8 @@ import (
 )
 
 type SongService struct {
-	q *db.Queries
+	q  *db.Queries
+	st *db.Store
 }
 
 // AddGenreSong implements ISongService.
@@ -37,24 +38,7 @@ func (s *SongService) AddFeatureSong(ctx context.Context, uuid uuid.UUID, singer
 
 // CreateSong implements ISongService.
 func (s *SongService) CreateSong(ctx context.Context, uuid uuid.UUID, name string, song_file string, lyric_file string, album_id int64) (*db.CreateSongRow, error) {
-
-	song, err := s.q.CreateSong(ctx, db.CreateSongParams{
-		ID:        uuid,
-		Name:      name,
-		SongFile:  song_file,
-		LyricFile: lyric_file,
-		AlbumID:   album_id,
-	})
-	if err != nil {
-		return &db.CreateSongRow{}, err
-	}
-
-	singer, err := s.q.GetSingerAlbum(ctx, album_id)
-	if err != nil {
-		return &db.CreateSongRow{}, err
-	}
-
-	_, err = s.q.AddSongSinger(ctx, db.AddSongSingerParams{SingerID: singer, SongID: uuid})
+	song, err := s.st.CreateSongTx(ctx, uuid, name, song_file, lyric_file, album_id)
 	if err != nil {
 		return &db.CreateSongRow{}, err
 	}
@@ -84,8 +68,9 @@ func (s *SongService) GetSong(ctx context.Context, uuid uuid.UUID) (SongResponse
 	return SongResponse{Genres: genres, Song: song, Singer: singer}, nil
 }
 
-func NewSongService(q *db.Queries) ISongService {
+func NewSongService(q *db.Queries, st *db.Store) ISongService {
 	return &SongService{
-		q: q,
+		q:  q,
+		st: st,
 	}
 }
