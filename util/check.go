@@ -18,7 +18,7 @@ var AllowMp3 = map[string]bool{
 }
 
 var AllowTxt = map[string]bool{
-	".txt": true,
+	".lrc": true,
 }
 
 func Mp3Check(mp3 string) bool {
