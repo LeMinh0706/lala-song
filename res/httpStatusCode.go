@@ -66,6 +66,8 @@ const (
 	ErrAlbumNotFound      = 40426
 	ErrUsernameSpace      = 40030
 	ErrForbidden          = 40301
+	ErrAddSingerSong      = 40201
+	ErrAddGenreSong       = 40202
 )
 
 var msg = map[int]string{
@@ -132,6 +134,8 @@ var msg = map[int]string{
 	ErrForbidden:          "Chưa đủ có quyền thực hiện",
 	ErrAddAlbum:           "Thêm Album thất bại",
 	ErrAlbumNotFound:      "Album không tồn tại",
+	ErrAddSingerSong:      "Nghệ sĩ này không thể thêm vào bài hát này, hoặc bài hát không tồn tại",
+	ErrAddGenreSong:       "Dòng nhạc này không thể thêm vào bài hát này, hoặc bài hát không tồn tại",
 }
 
 // ErrOutOfDate:   "Token is out of date",

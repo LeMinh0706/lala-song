@@ -24,21 +24,17 @@ INSERT INTO songs (
 SELECT s.id, s.name, s.song_file, s.lyric_file, s.album_id, a.name, a.image_url 
 FROM songs as s
 JOIN album as a ON s.album_id = a.id
-WHERE s.id = $1;
+WHERE s.id = $1 AND s.is_deleted IS NOT TRUE;
 
 -- name: GetSingersWithSong :many
 SELECT s.id, s.fullname, s.image_url FROM singers as s 
 JOIN singer_song as i ON s.id = i.singer_id
-WHERE i.song_id = $1
-LIMIT $2
-OFFSET $3;
+WHERE i.song_id = $1;
 
 -- name: GetGenresWithSong :many
 SELECT g.* FROM genres as g 
 JOIN song_genre as s ON g.id = s.genres_id
-WHERE s.song_id = $1
-LIMIT $2
-OFFSET $3;
+WHERE s.song_id = $1;
 
 
 -- name: GetListSong :many
@@ -77,3 +73,27 @@ UPDATE songs
 SET 
     is_deleted = TRUE
 WHERE id = $1;
+
+
+-- name: AddSongGenre :one
+INSERT INTO song_genre (
+    genres_id,
+    song_id
+)VALUES(
+    $1, $2
+)RETURNING *;
+
+
+
+-- name: AddSongSinger :one
+INSERT INTO singer_song (
+    singer_id,
+    song_id
+)VALUES(
+    $1, $2
+)RETURNING *;
+
+-- name: GetSingerAlbum :one
+SELECT s.id FROM singers as s 
+JOIN album as a ON s.id = a.singer_id
+WHERE a.id = $1; 
