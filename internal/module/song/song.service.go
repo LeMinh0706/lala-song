@@ -12,6 +12,6 @@ type ISongService interface {
 	AddFeatureSong(ctx context.Context, uuid uuid.UUID, singer_id int64) (*db.SingerSong, error)
 	AddGenreSong(ctx context.Context, uuid uuid.UUID, genre_id int64) (*db.SongGenre, error)
 	GetSong(ctx context.Context, uuid uuid.UUID) (SongResponse, error)
-	GetListSong(ctx context.Context, singer, album, genres, filter string, page, pageSize int32) ([]db.GetSongRow, int, error)
+	GetListSong(ctx context.Context, singer, album, genres, filter string, page, pageSize int32) ([]SongResponse, int, error)
 	DeleteSong(ctx context.Context, uuid uuid.UUID) error
 }

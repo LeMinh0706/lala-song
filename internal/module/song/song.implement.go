@@ -53,14 +53,14 @@ func (s *SongService) DeleteSong(ctx context.Context, uuid uuid.UUID) error {
 }
 
 // GetListSong implements ISongService.
-func (s *SongService) GetListSong(ctx context.Context, singer string, album string, genres string, filter string, page int32, pageSize int32) ([]db.GetSongRow, int, error) {
-	var res []db.GetSongRow
+func (s *SongService) GetListSong(ctx context.Context, singer string, album string, genres string, filter string, page int32, pageSize int32) ([]SongResponse, int, error) {
+	var res []SongResponse
 	switch filter {
 	case "album":
 
 		album_id, err := strconv.ParseInt(album, 10, 64)
 		if err != nil {
-			return []db.GetSongRow{}, 40000, err
+			return []SongResponse{}, 40000, err
 		}
 		list, err := s.q.GetAlbumSongs(ctx, db.GetAlbumSongsParams{
 			AlbumID: album_id,
@@ -68,10 +68,10 @@ func (s *SongService) GetListSong(ctx context.Context, singer string, album stri
 			Offset:  (page - 1) * pageSize,
 		})
 		if err != nil {
-			return []db.GetSongRow{}, 40426, err
+			return []SongResponse{}, 40426, err
 		}
 		for _, element := range list {
-			song, _ := s.q.GetSong(ctx, element)
+			song, _ := s.GetSong(ctx, element)
 			res = append(res, song)
 		}
 		return res, 200, nil
@@ -80,7 +80,7 @@ func (s *SongService) GetListSong(ctx context.Context, singer string, album stri
 
 		singer_id, err := strconv.ParseInt(singer, 10, 64)
 		if err != nil {
-			return []db.GetSongRow{}, 40000, err
+			return []SongResponse{}, 40000, err
 		}
 
 		list, err := s.q.GetSingerSongs(ctx, db.GetSingerSongsParams{
@@ -89,10 +89,10 @@ func (s *SongService) GetListSong(ctx context.Context, singer string, album stri
 			Offset:   (page - 1) * pageSize,
 		})
 		if err != nil {
-			return []db.GetSongRow{}, 40426, err
+			return []SongResponse{}, 40426, err
 		}
 		for _, element := range list {
-			song, _ := s.q.GetSong(ctx, element)
+			song, _ := s.GetSong(ctx, element)
 			res = append(res, song)
 		}
 		return res, 200, nil
@@ -101,7 +101,7 @@ func (s *SongService) GetListSong(ctx context.Context, singer string, album stri
 
 		genre_id, err := strconv.ParseInt(genres, 10, 64)
 		if err != nil {
-			return []db.GetSongRow{}, 40000, err
+			return []SongResponse{}, 40000, err
 		}
 
 		list, err := s.q.GetGenreSongs(ctx, db.GetGenreSongsParams{
@@ -110,10 +110,10 @@ func (s *SongService) GetListSong(ctx context.Context, singer string, album stri
 			Offset:   (page - 1) * pageSize,
 		})
 		if err != nil {
-			return []db.GetSongRow{}, 40426, err
+			return []SongResponse{}, 40426, err
 		}
 		for _, element := range list {
-			song, _ := s.q.GetSong(ctx, element)
+			song, _ := s.GetSong(ctx, element)
 			res = append(res, song)
 		}
 		return res, 200, nil
@@ -124,16 +124,16 @@ func (s *SongService) GetListSong(ctx context.Context, singer string, album stri
 			Offset: (page - 1) * pageSize,
 		})
 		if err != nil {
-			return []db.GetSongRow{}, 40426, err
+			return []SongResponse{}, 40426, err
 		}
 		for _, element := range list {
-			song, _ := s.q.GetSong(ctx, element)
+			song, _ := s.GetSong(ctx, element)
 			res = append(res, song)
 		}
 		return res, 200, nil
 
 	}
-	return []db.GetSongRow{}, 200, nil
+	return []SongResponse{}, 200, nil
 }
 
 // GetSong implements ISongService.
