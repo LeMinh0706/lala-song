@@ -2,13 +2,15 @@ package song
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/LeMinh0706/lala-song/internal/db"
 	"github.com/google/uuid"
 )
 
 type SongService struct {
-	q *db.Queries
+	q  *db.Queries
+	st *db.Store
 }
 
 // AddGenreSong implements ISongService.
@@ -37,24 +39,7 @@ func (s *SongService) AddFeatureSong(ctx context.Context, uuid uuid.UUID, singer
 
 // CreateSong implements ISongService.
 func (s *SongService) CreateSong(ctx context.Context, uuid uuid.UUID, name string, song_file string, lyric_file string, album_id int64) (*db.CreateSongRow, error) {
-
-	song, err := s.q.CreateSong(ctx, db.CreateSongParams{
-		ID:        uuid,
-		Name:      name,
-		SongFile:  song_file,
-		LyricFile: lyric_file,
-		AlbumID:   album_id,
-	})
-	if err != nil {
-		return &db.CreateSongRow{}, err
-	}
-
-	singer, err := s.q.GetSingerAlbum(ctx, album_id)
-	if err != nil {
-		return &db.CreateSongRow{}, err
-	}
-
-	_, err = s.q.AddSongSinger(ctx, db.AddSongSingerParams{SingerID: singer, SongID: uuid})
+	song, err := s.st.CreateSongTx(ctx, uuid, name, song_file, lyric_file, album_id)
 	if err != nil {
 		return &db.CreateSongRow{}, err
 	}
@@ -68,8 +53,87 @@ func (s *SongService) DeleteSong(ctx context.Context, uuid uuid.UUID) error {
 }
 
 // GetListSong implements ISongService.
-func (s *SongService) GetListSong(ctx context.Context, singer_id int64, album_id int64, genres int64, filter string) ([]db.GetSongRow, int, error) {
-	panic("unimplemented")
+func (s *SongService) GetListSong(ctx context.Context, singer string, album string, genres string, filter string, page int32, pageSize int32) ([]db.GetSongRow, int, error) {
+	var res []db.GetSongRow
+	switch filter {
+	case "album":
+
+		album_id, err := strconv.ParseInt(album, 10, 64)
+		if err != nil {
+			return []db.GetSongRow{}, 40000, err
+		}
+		list, err := s.q.GetAlbumSongs(ctx, db.GetAlbumSongsParams{
+			AlbumID: album_id,
+			Limit:   pageSize,
+			Offset:  (page - 1) * pageSize,
+		})
+		if err != nil {
+			return []db.GetSongRow{}, 40426, err
+		}
+		for _, element := range list {
+			song, _ := s.q.GetSong(ctx, element)
+			res = append(res, song)
+		}
+		return res, 200, nil
+
+	case "singer":
+
+		singer_id, err := strconv.ParseInt(singer, 10, 64)
+		if err != nil {
+			return []db.GetSongRow{}, 40000, err
+		}
+
+		list, err := s.q.GetSingerSongs(ctx, db.GetSingerSongsParams{
+			SingerID: singer_id,
+			Limit:    pageSize,
+			Offset:   (page - 1) * pageSize,
+		})
+		if err != nil {
+			return []db.GetSongRow{}, 40426, err
+		}
+		for _, element := range list {
+			song, _ := s.q.GetSong(ctx, element)
+			res = append(res, song)
+		}
+		return res, 200, nil
+
+	case "genres":
+
+		genre_id, err := strconv.ParseInt(genres, 10, 64)
+		if err != nil {
+			return []db.GetSongRow{}, 40000, err
+		}
+
+		list, err := s.q.GetGenreSongs(ctx, db.GetGenreSongsParams{
+			GenresID: genre_id,
+			Limit:    pageSize,
+			Offset:   (page - 1) * pageSize,
+		})
+		if err != nil {
+			return []db.GetSongRow{}, 40426, err
+		}
+		for _, element := range list {
+			song, _ := s.q.GetSong(ctx, element)
+			res = append(res, song)
+		}
+		return res, 200, nil
+
+	case "":
+		list, err := s.q.GetListSong(ctx, db.GetListSongParams{
+			Limit:  pageSize,
+			Offset: (page - 1) * pageSize,
+		})
+		if err != nil {
+			return []db.GetSongRow{}, 40426, err
+		}
+		for _, element := range list {
+			song, _ := s.q.GetSong(ctx, element)
+			res = append(res, song)
+		}
+		return res, 200, nil
+
+	}
+	return []db.GetSongRow{}, 200, nil
 }
 
 // GetSong implements ISongService.
@@ -84,8 +148,9 @@ func (s *SongService) GetSong(ctx context.Context, uuid uuid.UUID) (SongResponse
 	return SongResponse{Genres: genres, Song: song, Singer: singer}, nil
 }
 
-func NewSongService(q *db.Queries) ISongService {
+func NewSongService(q *db.Queries, st *db.Store) ISongService {
 	return &SongService{
-		q: q,
+		q:  q,
+		st: st,
 	}
 }

@@ -11,6 +11,7 @@ func NewSongRouter(f fiber.Router, service ISongService, token token.Maker) {
 	songGroup := f.Group("/songs")
 	{
 		songGroup.Get("/:id", sc.GetSongById)
+		songGroup.Get("", sc.GetListSong)
 	}
 	auth := songGroup.Group("").Use(middlewares.AuthorizeAdminMiddleware(token))
 	{

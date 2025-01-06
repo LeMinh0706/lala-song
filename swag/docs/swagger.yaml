@@ -645,6 +645,51 @@ paths:
       tags:
       - Singers
   /songs:
+    get:
+      consumes:
+      - application/json
+      description: Get list songs with page and page size (Limit-Offset)
+      parameters:
+      - description: Your filter
+        in: query
+        name: filter
+        type: string
+      - description: Singer ID
+        in: query
+        name: singer
+        type: integer
+      - description: Album ID
+        in: query
+        name: album
+        type: integer
+      - description: Genre ID
+        in: query
+        name: genres
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page Size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetSongRow'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      summary: Get list songs
+      tags:
+      - Songs
     post:
       consumes:
       - multipart/form-data

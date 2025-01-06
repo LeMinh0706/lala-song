@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/LeMinh0706/lala-song/internal/db"
+	"github.com/LeMinh0706/lala-song/internal/handler"
 	"github.com/LeMinh0706/lala-song/res"
 	"github.com/LeMinh0706/lala-song/util"
 	"github.com/gofiber/fiber/v2"
@@ -171,4 +172,40 @@ func (s *SongController) AddGenre(f *fiber.Ctx) error {
 	}
 
 	return res.SuccessResponse(f, 200, feature)
+}
+
+// Song godoc
+// @Summary      Get list songs
+// @Description  Get list songs with page and page size (Limit-Offset)
+// @Tags         Songs
+// @Accept       json
+// @Produce      json
+// @Param        filter query string false "Your filter"
+// @Param        singer query int false "Singer ID"
+// @Param        album query int false "Album ID"
+// @Param        genres query int false "Genre ID"
+// @Param        page query int true "Page"
+// @Param        page_size query int true "Page Size"
+// @Success      200  {object}  db.GetSongRow
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /songs [get]
+func (s *SongController) GetListSong(f *fiber.Ctx) error {
+	pageStr := f.Query("page")
+	pageSizeStr := f.Query("page_size")
+
+	page, pageSize, numErr := handler.CheckQuery(f, pageStr, pageSizeStr)
+	if numErr != 0 {
+		return res.ErrorResponse(f, numErr)
+	}
+
+	filter := f.Query("filter")
+	singer := f.Query("singer")
+	album := f.Query("album")
+	genres := f.Query("genres")
+
+	song, code, err := s.service.GetListSong(f.Context(), singer, album, genres, filter, page, pageSize)
+	if err != nil {
+		return res.ErrorResponse(f, code)
+	}
+	return res.SuccessResponse(f, code, song)
 }

@@ -21,13 +21,15 @@ type ISevice struct {
 }
 
 func InitService(pg *sql.DB, config util.Config) *ISevice {
+	store := db.NewStore(pg)
+
 	q := db.New(pg)
 
 	userService := user.NewUserService(q)
 	singerService := singer.NewSingerService(q)
 	genreService := genre.NewGenreService(q)
 	albumService := album.NewAlbumService(q, singerService)
-	songService := song.NewSongService(q)
+	songService := song.NewSongService(q, store)
 
 	return &ISevice{
 		UserService:   userService,
