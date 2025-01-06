@@ -671,6 +671,73 @@ const docTemplate = `{
             }
         },
         "/songs": {
+            "get": {
+                "description": "Get list songs with page and page size (Limit-Offset)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Get list songs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Your filter",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Singer ID",
+                        "name": "singer",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Album ID",
+                        "name": "album",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Genre ID",
+                        "name": "genres",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.GetSongRow"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrSwaggerJson"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {

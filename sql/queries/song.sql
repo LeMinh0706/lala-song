@@ -47,7 +47,7 @@ OFFSET $2;
 -- name: GetAlbumSongs :many
 SELECT s.id FROM songs as s 
 JOIN album as a ON s.album_id = a.id 
-WHERE album_id = $1 AND is_deleted != TRUE
+WHERE album_id = $1 AND s.is_deleted != TRUE
 ORDER BY s.created_at DESC 
 LIMIT $2
 OFFSET $3;
@@ -65,8 +65,8 @@ SELECT id FROM songs as s
 JOIN song_genre as g ON s.id = g.song_id 
 WHERE g.genres_id = $1 AND is_deleted != TRUE
 ORDER BY created_at DESC 
-LIMIT $1
-OFFSET $2;
+LIMIT $2
+OFFSET $3;
 
 -- name: DeleteSong :exec
 UPDATE songs
