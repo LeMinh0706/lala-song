@@ -26,6 +26,9 @@ func AuthorizeMiddleware(tokenMaker token.Maker) fiber.Handler {
 		}
 
 		fields := strings.Fields(authorizationHeader)
+		if len(fields) < 2 {
+			return res.ErrorResponse(ctx, 40101)
+		}
 
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
@@ -36,6 +39,7 @@ func AuthorizeMiddleware(tokenMaker token.Maker) fiber.Handler {
 		return ctx.Next()
 	}
 }
+
 func AuthorizeAdminMiddleware(tokenMaker token.Maker) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		authorizationHeader := ctx.Get(AuthorizationHeaderKey)
@@ -49,12 +53,16 @@ func AuthorizeAdminMiddleware(tokenMaker token.Maker) fiber.Handler {
 		}
 
 		fields := strings.Fields(authorizationHeader)
+		if len(fields) < 2 {
+			return res.ErrorResponse(ctx, 40101)
+		}
 
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
 			return res.ErrorResponse(ctx, 40101)
 		}
+
 		// Kiểm tra role
 		if payload.Rolename != "Admin" {
 			return res.ErrorResponse(ctx, 40301)

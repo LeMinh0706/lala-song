@@ -49,6 +49,8 @@ CREATE TABLE "songs" (
   "name" varchar NOT NULL,
   "song_file" varchar NOT NULL,
   "lyric_file" varchar NOT NULL,
+  "lyrics" varchar NOT NULL,
+  "lyrics_tsv" tsvector,
   "is_deleted" bool NOT NULL DEFAULT false,
   "album_id" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
@@ -79,6 +81,8 @@ CREATE INDEX ON "singer_song" ("singer_id");
 CREATE INDEX ON "singer_song" ("song_id");
 
 CREATE INDEX ON "songs" ("album_id");
+
+CREATE INDEX "idx_lyrics_tsv" ON "songs" USING GIN ("lyrics_tsv");
 
 CREATE INDEX ON "song_genre" ("genres_id");
 
