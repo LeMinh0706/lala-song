@@ -61,9 +61,10 @@ INSERT INTO songs (
     name,
     song_file,
     lyric_file,
+    lyrics,
     album_id
 ) VALUES (
-    $1, $2, $3, $4, $5
+    $1, $2, $3, $4, $5, $6
 ) RETURNING id, name, song_file, lyric_file, album_id, created_at
 `
 
@@ -72,6 +73,7 @@ type CreateSongParams struct {
 	Name      string    `json:"name"`
 	SongFile  string    `json:"song_file"`
 	LyricFile string    `json:"lyric_file"`
+	Lyrics    string    `json:"lyrics"`
 	AlbumID   int64     `json:"album_id"`
 }
 
@@ -101,6 +103,7 @@ func (q *Queries) CreateSong(ctx context.Context, arg CreateSongParams) (CreateS
 		arg.Name,
 		arg.SongFile,
 		arg.LyricFile,
+		arg.Lyrics,
 		arg.AlbumID,
 	)
 	var i CreateSongRow

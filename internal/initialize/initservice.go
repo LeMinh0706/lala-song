@@ -5,6 +5,7 @@ import (
 
 	"github.com/LeMinh0706/lala-song/internal/db"
 	"github.com/LeMinh0706/lala-song/internal/module/album"
+	"github.com/LeMinh0706/lala-song/internal/module/favorite"
 	"github.com/LeMinh0706/lala-song/internal/module/genre"
 	"github.com/LeMinh0706/lala-song/internal/module/singer"
 	"github.com/LeMinh0706/lala-song/internal/module/song"
@@ -13,11 +14,12 @@ import (
 )
 
 type ISevice struct {
-	UserService   user.IUserService
-	SingerService singer.ISingerService
-	GenreService  genre.IGenreService
-	AlbumService  album.IAlbumService
-	SongService   song.ISongService
+	UserService     user.IUserService
+	SingerService   singer.ISingerService
+	GenreService    genre.IGenreService
+	AlbumService    album.IAlbumService
+	SongService     song.ISongService
+	FavoriteService favorite.IFavoriteService
 }
 
 func InitService(pg *sql.DB, config util.Config) *ISevice {
@@ -30,12 +32,14 @@ func InitService(pg *sql.DB, config util.Config) *ISevice {
 	genreService := genre.NewGenreService(q)
 	albumService := album.NewAlbumService(q, singerService)
 	songService := song.NewSongService(q, store)
+	favoriteService := favorite.NewFavoriteService(q, songService)
 
 	return &ISevice{
-		UserService:   userService,
-		SingerService: singerService,
-		GenreService:  genreService,
-		AlbumService:  albumService,
-		SongService:   songService,
+		UserService:     userService,
+		SingerService:   singerService,
+		GenreService:    genreService,
+		AlbumService:    albumService,
+		SongService:     songService,
+		FavoriteService: favoriteService,
 	}
 }

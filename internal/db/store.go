@@ -54,6 +54,7 @@ func (store *Store) CreateSongTx(ctx context.Context, uuid uuid.UUID, name strin
 			SongFile:  song_file,
 			LyricFile: lyric_file,
 			AlbumID:   album_id,
+			Lyrics:    "Set cứng",
 		})
 		if err != nil {
 			return err

@@ -43,7 +43,7 @@ func (s *SongController) CreateSong(f *fiber.Ctx) error {
 	if err != nil {
 		return res.ErrorNonKnow(f, err.Error())
 	}
-	const maxSize = 10 << 20
+	const maxSize = 16 << 20
 	if songfile.Size > maxSize {
 		return res.ErrorResponse(f, 41300)
 	}
@@ -186,7 +186,7 @@ func (s *SongController) AddGenre(f *fiber.Ctx) error {
 // @Param        genres query int false "Genre ID"
 // @Param        page query int true "Page"
 // @Param        page_size query int true "Page Size"
-// @Success      200  {object}  db.GetSongRow
+// @Success      200  {object}  []db.GetSongRow
 // @Failure      500  {object}  res.ErrSwaggerJson
 // @Router       /songs [get]
 func (s *SongController) GetListSong(f *fiber.Ctx) error {
