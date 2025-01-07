@@ -38,8 +38,8 @@ func (s *SongService) AddFeatureSong(ctx context.Context, uuid uuid.UUID, singer
 }
 
 // CreateSong implements ISongService.
-func (s *SongService) CreateSong(ctx context.Context, uuid uuid.UUID, name string, song_file string, lyric_file string, album_id int64) (*db.CreateSongRow, error) {
-	song, err := s.st.CreateSongTx(ctx, uuid, name, song_file, lyric_file, album_id)
+func (s *SongService) CreateSong(ctx context.Context, uuid uuid.UUID, name string, song_file string, lyric_file string, lyrics string, album_id int64) (*db.CreateSongRow, error) {
+	song, err := s.st.CreateSongTx(ctx, uuid, name, song_file, lyric_file, lyrics, album_id)
 	if err != nil {
 		return &db.CreateSongRow{}, err
 	}

@@ -1,12 +1,14 @@
 -- name: SearchSong :many
 SELECT id FROM songs
-WHERE fullname ILIKE '%' || $1 || '%'
+WHERE songs.name ILIKE '%' || $1 || '%'
 LIMIT $2
 OFFSET $3;
 
 -- name: SearchSongsByLyrics :many
-SELECT id, name, song_file, lyric_file, lyrics, is_deleted, album_id, created_at
+SELECT id
 FROM songs
-WHERE lyrics_tsv @@ plainto_tsquery('vietnamese', $1)
+WHERE to_tsvector('vietnamese', lyrics) @@ plainto_tsquery('vietnamese', $1)
   AND is_deleted = false
-ORDER BY created_at DESC;
+ORDER BY created_at DESC
+LIMIT $2
+OFFSET $3;

@@ -67,7 +67,7 @@ type Querier interface {
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
 	SearchSong(ctx context.Context, arg SearchSongParams) ([]uuid.UUID, error)
-	SearchSongsByLyrics(ctx context.Context, plaintoTsquery string) ([]SearchSongsByLyricsRow, error)
+	SearchSongsByLyrics(ctx context.Context, arg SearchSongsByLyricsParams) ([]uuid.UUID, error)
 	UnlikeSong(ctx context.Context, arg UnlikeSongParams) error
 	UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (UpdateAlbumRow, error)
 	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)

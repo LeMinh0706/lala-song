@@ -47,7 +47,7 @@ CREATE TABLE "singer_song" (
 CREATE TABLE "songs" (
   "id" uuid PRIMARY KEY,
   "name" varchar NOT NULL,
-  "song_file" varchar NOT NULL,
+"song_file" varchar NOT NULL,
   "lyric_file" varchar NOT NULL,
   "lyrics" varchar NOT NULL,
   "lyrics_tsv" tsvector,

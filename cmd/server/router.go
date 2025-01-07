@@ -5,6 +5,7 @@ import (
 	"github.com/LeMinh0706/lala-song/internal/module/album"
 	"github.com/LeMinh0706/lala-song/internal/module/favorite"
 	"github.com/LeMinh0706/lala-song/internal/module/genre"
+	"github.com/LeMinh0706/lala-song/internal/module/search"
 	"github.com/LeMinh0706/lala-song/internal/module/singer"
 	"github.com/LeMinh0706/lala-song/internal/module/song"
 	"github.com/LeMinh0706/lala-song/internal/module/user"
@@ -25,6 +26,7 @@ func (s *Server) NewRouter() {
 		album.NewAlbumRouter(a, initService.AlbumService, s.TokenMaker)
 		song.NewSongRouter(a, initService.SongService, s.TokenMaker)
 		favorite.NewFavoriteRouter(a, initService.FavoriteService, s.TokenMaker)
+		search.NewSearchRouter(a, initService.SearchService)
 	}
 
 }
