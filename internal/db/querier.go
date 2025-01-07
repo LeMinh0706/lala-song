@@ -27,6 +27,7 @@ type Querier interface {
 	// );
 	CreateAlbum(ctx context.Context, arg CreateAlbumParams) (CreateAlbumRow, error)
 	CreateGenre(ctx context.Context, arg CreateGenreParams) (Genre, error)
+	CreateLikeSong(ctx context.Context, arg CreateLikeSongParams) (Favorite, error)
 	CreateSinger(ctx context.Context, arg CreateSingerParams) (Singer, error)
 	// CREATE TABLE "songs" (
 	//   "id" uuid PRIMARY KEY,
@@ -46,6 +47,8 @@ type Querier interface {
 	// SELECT u.*, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1;
 	GetAlbum(ctx context.Context, id int64) (GetAlbumRow, error)
 	GetAlbumSongs(ctx context.Context, arg GetAlbumSongsParams) ([]uuid.UUID, error)
+	GetFavorite(ctx context.Context, arg GetFavoriteParams) (uuid.UUID, error)
+	GetFavoriteSongs(ctx context.Context, arg GetFavoriteSongsParams) ([]uuid.UUID, error)
 	GetGenre(ctx context.Context, id int64) (Genre, error)
 	GetGenreSongs(ctx context.Context, arg GetGenreSongsParams) ([]uuid.UUID, error)
 	GetGenresWithSong(ctx context.Context, songID uuid.UUID) ([]Genre, error)
@@ -60,8 +63,12 @@ type Querier interface {
 	GetSingerSongs(ctx context.Context, arg GetSingerSongsParams) ([]uuid.UUID, error)
 	GetSingersWithSong(ctx context.Context, songID uuid.UUID) ([]GetSingersWithSongRow, error)
 	GetSong(ctx context.Context, id uuid.UUID) (GetSongRow, error)
+	GetUserId(ctx context.Context, username string) (uuid.UUID, error)
 	Login(ctx context.Context, username string) (LoginRow, error)
 	Register(ctx context.Context, arg RegisterParams) (User, error)
+	SearchSong(ctx context.Context, arg SearchSongParams) ([]uuid.UUID, error)
+	SearchSongsByLyrics(ctx context.Context, plaintoTsquery string) ([]SearchSongsByLyricsRow, error)
+	UnlikeSong(ctx context.Context, arg UnlikeSongParams) error
 	UpdateAlbum(ctx context.Context, arg UpdateAlbumParams) (UpdateAlbumRow, error)
 	UpdateGenre(ctx context.Context, arg UpdateGenreParams) (Genre, error)
 	UpdateSinger(ctx context.Context, arg UpdateSingerParams) (UpdateSingerRow, error)

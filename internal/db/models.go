@@ -48,13 +48,15 @@ type SingerSong struct {
 }
 
 type Song struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	SongFile  string    `json:"song_file"`
-	LyricFile string    `json:"lyric_file"`
-	IsDeleted bool      `json:"is_deleted"`
-	AlbumID   int64     `json:"album_id"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        uuid.UUID   `json:"id"`
+	Name      string      `json:"name"`
+	SongFile  string      `json:"song_file"`
+	LyricFile string      `json:"lyric_file"`
+	Lyrics    string      `json:"lyrics"`
+	LyricsTsv interface{} `json:"lyrics_tsv"`
+	IsDeleted bool        `json:"is_deleted"`
+	AlbumID   int64       `json:"album_id"`
+	CreatedAt time.Time   `json:"created_at"`
 }
 
 type SongGenre struct {

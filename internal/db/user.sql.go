@@ -36,6 +36,18 @@ func (q *Queries) GetMe(ctx context.Context, username string) (GetMeRow, error) 
 	return i, err
 }
 
+const getUserId = `-- name: GetUserId :one
+SELECT id FROM users 
+WHERE username  = $1
+`
+
+func (q *Queries) GetUserId(ctx context.Context, username string) (uuid.UUID, error) {
+	row := q.db.QueryRowContext(ctx, getUserId, username)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const login = `-- name: Login :one
 SELECT u.id, u.username, u.password, u.fullname, u.gender, u.avt, u.role_id, u.created_at, r.name FROM users as u JOIN role as r ON u.role_id = r.id WHERE username = $1
 `
