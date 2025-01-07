@@ -18,5 +18,6 @@ func NewSongRouter(f fiber.Router, service ISongService, token token.Maker) {
 		auth.Post("", sc.CreateSong)
 		auth.Post("/feature", sc.AddFeatureSong)
 		auth.Post("/genre", sc.AddGenre)
+		auth.Post("/soft/:id", sc.DeleteSong)
 	}
 }

@@ -20,7 +20,6 @@ INSERT INTO songs (
     $1, $2, $3, $4, $5, $6
 ) RETURNING id, name, song_file, lyric_file, album_id, created_at;
 
-
 -- name: GetSong :one
 SELECT s.id, s.name, s.song_file, s.lyric_file, s.album_id, a.name, a.image_url 
 FROM songs as s

@@ -49,7 +49,11 @@ func (s *SongService) CreateSong(ctx context.Context, uuid uuid.UUID, name strin
 
 // DeleteSong implements ISongService.
 func (s *SongService) DeleteSong(ctx context.Context, uuid uuid.UUID) error {
-	panic("unimplemented")
+	err := s.q.DeleteSong(ctx, uuid)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetListSong implements ISongService.

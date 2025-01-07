@@ -932,6 +932,31 @@ paths:
       summary: Thêm thể loại nhạc cho bài hát khác vào bài hát
       tags:
       - Songs
+  /songs/soft/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Delete song with id
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: No content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/res.ErrSwaggerJson'
+      security:
+      - BearerAuth: []
+      summary: Delete song with id
+      tags:
+      - Songs
   /users/login:
     post:
       consumes:
