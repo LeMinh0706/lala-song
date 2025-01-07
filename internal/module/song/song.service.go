@@ -8,7 +8,7 @@ import (
 )
 
 type ISongService interface {
-	CreateSong(ctx context.Context, uuid uuid.UUID, name, song_file, lyric_file string, album_id int64) (*db.CreateSongRow, error)
+	CreateSong(ctx context.Context, uuid uuid.UUID, name, song_file, lyric_file, lyrics string, album_id int64) (*db.CreateSongRow, error)
 	AddFeatureSong(ctx context.Context, uuid uuid.UUID, singer_id int64) (*db.SingerSong, error)
 	AddGenreSong(ctx context.Context, uuid uuid.UUID, genre_id int64) (*db.SongGenre, error)
 	GetSong(ctx context.Context, uuid uuid.UUID) (SongResponse, error)

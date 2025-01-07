@@ -2,6 +2,7 @@ package song
 
 import (
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -22,6 +23,43 @@ func NewSongController(service ISongService) *SongController {
 	return &SongController{
 		service: service,
 	}
+}
+
+// Songs godoc
+// @Summary      Create song
+// @Description  Create song
+// @Tags         Songs
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        lyric formData file true "Lyric file"
+// @Success      201  {object} 	db.CreateSongRow
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /songs/lyric [post]
+func (s *SongController) GetLyric(f *fiber.Ctx) error {
+	lyric, err := f.FormFile("lyric")
+	if err != nil {
+		return res.ErrorNonKnow(f, err.Error())
+	}
+	const maxSize = 16 << 20
+	if lyric.Size > maxSize {
+		return res.ErrorResponse(f, 41300)
+	}
+	if lyric != nil {
+		if !util.LyricCheck(lyric.Filename) {
+			return res.ErrorResponse(f, res.ErrBadRequestMime)
+		}
+	}
+	lyricname := fmt.Sprintf("upload/%s/%d%s", "lyrics", time.Now().Unix(), filepath.Ext(lyric.Filename))
+
+	err = f.SaveFile(lyric, lyricname)
+	if err != nil {
+		return res.ErrorNonKnow(f, err.Error())
+	}
+	data, err := ioutil.ReadFile(lyricname)
+	if err != nil {
+		return res.ErrorNonKnow(f, err.Error())
+	}
+	return res.SuccessResponse(f, 201, string(data))
 }
 
 // Songs godoc
@@ -85,9 +123,14 @@ func (s *SongController) CreateSong(f *fiber.Ctx) error {
 		return res.ErrorResponse(f, res.ErrBadRequestId)
 	}
 
+	data, err := ioutil.ReadFile(lyricname)
+	if err != nil {
+		return res.ErrorNonKnow(f, err.Error())
+	}
+
 	uuid, _ := uuid.NewRandom()
 
-	song, err := s.service.CreateSong(f.Context(), uuid, name, filename, lyricname, album_id)
+	song, err := s.service.CreateSong(f.Context(), uuid, name, filename, lyricname, util.CleanTime(string(data)), album_id)
 	if err != nil {
 		return res.ErrorNonKnow(f, err.Error())
 	}

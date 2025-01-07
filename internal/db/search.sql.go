@@ -8,14 +8,13 @@ package db
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/google/uuid"
 )
 
 const searchSong = `-- name: SearchSong :many
 SELECT id FROM songs
-WHERE fullname ILIKE '%' || $1 || '%'
+WHERE songs.name ILIKE '%' || $1 || '%'
 LIMIT $2
 OFFSET $3
 `
@@ -50,46 +49,34 @@ func (q *Queries) SearchSong(ctx context.Context, arg SearchSongParams) ([]uuid.
 }
 
 const searchSongsByLyrics = `-- name: SearchSongsByLyrics :many
-SELECT id, name, song_file, lyric_file, lyrics, is_deleted, album_id, created_at
+SELECT id
 FROM songs
-WHERE lyrics_tsv @@ plainto_tsquery('vietnamese', $1)
+WHERE to_tsvector('vietnamese', lyrics) @@ plainto_tsquery('vietnamese', $1)
   AND is_deleted = false
 ORDER BY created_at DESC
+LIMIT $2
+OFFSET $3
 `
 
-type SearchSongsByLyricsRow struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	SongFile  string    `json:"song_file"`
-	LyricFile string    `json:"lyric_file"`
-	Lyrics    string    `json:"lyrics"`
-	IsDeleted bool      `json:"is_deleted"`
-	AlbumID   int64     `json:"album_id"`
-	CreatedAt time.Time `json:"created_at"`
+type SearchSongsByLyricsParams struct {
+	PlaintoTsquery string `json:"plainto_tsquery"`
+	Limit          int32  `json:"limit"`
+	Offset         int32  `json:"offset"`
 }
 
-func (q *Queries) SearchSongsByLyrics(ctx context.Context, plaintoTsquery string) ([]SearchSongsByLyricsRow, error) {
-	rows, err := q.db.QueryContext(ctx, searchSongsByLyrics, plaintoTsquery)
+func (q *Queries) SearchSongsByLyrics(ctx context.Context, arg SearchSongsByLyricsParams) ([]uuid.UUID, error) {
+	rows, err := q.db.QueryContext(ctx, searchSongsByLyrics, arg.PlaintoTsquery, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []SearchSongsByLyricsRow{}
+	items := []uuid.UUID{}
 	for rows.Next() {
-		var i SearchSongsByLyricsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.SongFile,
-			&i.LyricFile,
-			&i.Lyrics,
-			&i.IsDeleted,
-			&i.AlbumID,
-			&i.CreatedAt,
-		); err != nil {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, id)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

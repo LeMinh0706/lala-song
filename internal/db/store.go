@@ -38,7 +38,7 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 	return tx.Commit()
 }
 
-func (store *Store) CreateSongTx(ctx context.Context, uuid uuid.UUID, name string, song_file string, lyric_file string, album_id int64) (CreateSongRow, error) {
+func (store *Store) CreateSongTx(ctx context.Context, uuid uuid.UUID, name string, song_file string, lyric_file string, lyrics string, album_id int64) (CreateSongRow, error) {
 	var result CreateSongRow
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
@@ -54,7 +54,7 @@ func (store *Store) CreateSongTx(ctx context.Context, uuid uuid.UUID, name strin
 			SongFile:  song_file,
 			LyricFile: lyric_file,
 			AlbumID:   album_id,
-			Lyrics:    "Set cứng",
+			Lyrics:    lyrics,
 		})
 		if err != nil {
 			return err
