@@ -49,7 +49,7 @@ func (q *Queries) GetFavorite(ctx context.Context, arg GetFavoriteParams) (uuid.
 }
 
 const getFavoriteSongs = `-- name: GetFavoriteSongs :many
-SELECT song_id FROM favorite WHERE user_id = $1
+SELECT id FROM songs as S JOIN favorite as f ON s.id = f.song_id WHERE user_id = $1 AND is_deleted != TRUE
 LIMIT $2
 OFFSET $3
 `
@@ -68,11 +68,11 @@ func (q *Queries) GetFavoriteSongs(ctx context.Context, arg GetFavoriteSongsPara
 	defer rows.Close()
 	items := []uuid.UUID{}
 	for rows.Next() {
-		var song_id uuid.UUID
-		if err := rows.Scan(&song_id); err != nil {
+		var id uuid.UUID
+		if err := rows.Scan(&id); err != nil {
 			return nil, err
 		}
-		items = append(items, song_id)
+		items = append(items, id)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

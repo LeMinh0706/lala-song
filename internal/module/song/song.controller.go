@@ -110,7 +110,7 @@ func (s *SongController) GetSongById(f *fiber.Ctx) error {
 	uuid, err := uuid.Parse(idStr)
 
 	if err != nil {
-		res.ErrorResponse(f, res.ErrBadRequestId)
+		return res.ErrorResponse(f, res.ErrBadRequestId)
 	}
 
 	genre, err := s.service.GetSong(f.Context(), uuid)
@@ -208,4 +208,32 @@ func (s *SongController) GetListSong(f *fiber.Ctx) error {
 		return res.ErrorResponse(f, code)
 	}
 	return res.SuccessResponse(f, code, song)
+}
+
+// song godoc
+// @Summary      Delete song with id
+// @Description  Delete song with id
+// @Tags         Songs
+// @Accept       json
+// @Produce      json
+// @Param        id path string true "ID"
+// @Security BearerAuth
+// @Success      200  "No content"
+// @Failure      500  {object}  res.ErrSwaggerJson
+// @Router       /songs/soft/{id} [post]
+func (s *SongController) DeleteSong(f *fiber.Ctx) error {
+	idStr := f.Params("id")
+
+	uuid, err := uuid.Parse(idStr)
+
+	if err != nil {
+		return res.ErrorResponse(f, res.ErrBadRequestId)
+	}
+
+	err = s.service.DeleteSong(f.Context(), uuid)
+	if err != nil {
+		return res.ErrorNonKnow(f, err.Error())
+	}
+
+	return res.SuccessResponse(f, 204, nil)
 }

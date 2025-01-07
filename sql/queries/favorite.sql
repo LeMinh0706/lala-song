@@ -10,7 +10,7 @@ INSERT INTO favorite (
 DELETE FROM favorite WHERE user_id = $1 AND song_id = $2;
 
 -- name: GetFavoriteSongs :many
-SELECT song_id FROM favorite WHERE user_id = $1
+SELECT id FROM songs as S JOIN favorite as f ON s.id = f.song_id WHERE user_id = $1 AND is_deleted != TRUE
 LIMIT $2
 OFFSET $3;
 
