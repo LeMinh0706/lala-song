@@ -23,7 +23,6 @@ func NewServer(pg *sql.DB, config util.Config) (*Server, error) {
 		log.Fatal("can't create token")
 	}
 	app := fiber.New(fiber.Config{
-		Prefork:   true,
 		BodyLimit: 24 * 1024 * 1024,
 	})
 	app.Use(logger.New(logger.Config{
